@@ -10,59 +10,66 @@
       }
     </style>
     <script>
-      AFRAME.registerComponent('virus-core', {
-        init: function() {
-          const core = document.createElement('a-sphere');
-          core.setAttribute('radius', '0.5');
-          core.setAttribute('color', '#800080');
-          core.setAttribute('roughness', '1');
-          core.setAttribute('metalness', '0.2');
-          this.el.appendChild(core);
+     AFRAME.registerComponent('virus-core', {
+  init: function() {
+    // Create core sphere with purple/blue glow
+    const core = document.createElement('a-sphere');
+    core.setAttribute('radius', '0.5');
+    core.setAttribute('color', '#4B0082');
+    core.setAttribute('roughness', '0.3');
+    core.setAttribute('metalness', '0.7');
+    core.setAttribute('emission', '#2A1B3D');
+    this.el.appendChild(core);
 
-          const numSpikes = 60;
-          const phi = Math.PI * (3 - Math.sqrt(5));
+    const numSpikes = 60;
+    const phi = Math.PI * (3 - Math.sqrt(5));
 
-          for (let i = 0; i < numSpikes; i++) {
-            const y = 1 - (i / (numSpikes - 1)) * 2;
-            const radius = Math.sqrt(1 - y * y);
-            const theta = phi * i;
+    for (let i = 0; i < numSpikes; i++) {
+      const y = 1 - (i / (numSpikes - 1)) * 2;
+      const radius = Math.sqrt(1 - y * y);
+      const theta = phi * i;
 
-            const x = Math.cos(theta) * radius;
-            const z = Math.sin(theta) * radius;
+      const x = Math.cos(theta) * radius;
+      const z = Math.sin(theta) * radius;
 
-            const spikeContainer = document.createElement('a-entity');
-            
-            const stem = document.createElement('a-cylinder');
-            stem.setAttribute('height', '0.6');
-            stem.setAttribute('radius', '0.008');
-            stem.setAttribute('color', '#800080');
-            
-            const bulb = document.createElement('a-sphere');
-            bulb.setAttribute('radius', '0.05');
-            bulb.setAttribute('color', '#4444FF');
-            bulb.setAttribute('position', '0 0.3 0');
-            
-            spikeContainer.appendChild(stem);
-            spikeContainer.appendChild(bulb);
-            
-            spikeContainer.setAttribute('position', `${x * 0.5} ${y * 0.5} ${z * 0.5}`);
-            
-            const direction = new THREE.Vector3(x, y, z).normalize();
-            const quaternion = new THREE.Quaternion();
-            const up = new THREE.Vector3(0, 1, 0);
-            quaternion.setFromUnitVectors(up, direction);
-            const euler = new THREE.Euler().setFromQuaternion(quaternion);
-            
-            spikeContainer.setAttribute('rotation', {
-              x: THREE.MathUtils.radToDeg(euler.x),
-              y: THREE.MathUtils.radToDeg(euler.y),
-              z: THREE.MathUtils.radToDeg(euler.z)
-            });
-            
-            this.el.appendChild(spikeContainer);
-          }
-        }
+      const spikeContainer = document.createElement('a-entity');
+      
+      // Create tapered cone instead of cylinder
+      const stem = document.createElement('a-cone');
+      stem.setAttribute('height', '0.6');
+      stem.setAttribute('radius-bottom', '0.015');
+      stem.setAttribute('radius-top', '0.005');
+      stem.setAttribute('color', '#4169E1');
+      stem.setAttribute('opacity', '0.9');
+      
+      // Glowing bulb at the end
+      const bulb = document.createElement('a-sphere');
+      bulb.setAttribute('radius', '0.04');
+      bulb.setAttribute('color', '#00FFFF');
+      bulb.setAttribute('emission', '#00FFFF');
+      bulb.setAttribute('position', '0 0.3 0');
+      
+      spikeContainer.appendChild(stem);
+      spikeContainer.appendChild(bulb);
+      
+      spikeContainer.setAttribute('position', `${x * 0.5} ${y * 0.5} ${z * 0.5}`);
+      
+      const direction = new THREE.Vector3(x, y, z).normalize();
+      const quaternion = new THREE.Quaternion();
+      const up = new THREE.Vector3(0, 1, 0);
+      quaternion.setFromUnitVectors(up, direction);
+      const euler = new THREE.Euler().setFromQuaternion(quaternion);
+      
+      spikeContainer.setAttribute('rotation', {
+        x: THREE.MathUtils.radToDeg(euler.x),
+        y: THREE.MathUtils.radToDeg(euler.y),
+        z: THREE.MathUtils.radToDeg(euler.z)
       });
+      
+      this.el.appendChild(spikeContainer);
+    }
+  }
+});
 
     AFRAME.registerComponent('research-timeline', {
   init: function() {
@@ -147,7 +154,8 @@ this.el.appendChild(detail);    });
   </head>
   <body>
     <a-scene>
-      <a-sky color="#8fd3fe"></a-sky>
+<a-sky color="#000033"></a-sky>
+
       
       <!-- Environment -->
       <a-entity light="type: ambient; intensity: 0.5"></a-entity>
