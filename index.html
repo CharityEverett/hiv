@@ -71,7 +71,7 @@
   }
 });
 
-  AFRAME.registerComponent('research-timeline', {
+ AFRAME.registerComponent('research-timeline', {
   init: function() {
     const timelineData = [
       {
@@ -119,16 +119,15 @@
       arc.setAttribute('arc', segmentAngle);
       arc.setAttribute('color', data.color);
       arc.setAttribute('rotation', {
-      x: 0,  
-  y: index * segmentAngle, 
-  z: 0
-});
+        x: 90,
+        y: 0,
+        z: index * segmentAngle
+      });
       
       const label = document.createElement('a-text');
-    const labelAngle = index * segmentAngle;
-const labelX = radius * Math.cos(labelAngle * Math.PI / 180);
-const labelZ = radius * Math.sin(labelAngle * Math.PI / 180);
-label.setAttribute('position', `${labelX} 0 ${labelZ}`); 
+      const labelAngle = index * segmentAngle;
+      const labelX = radius * Math.cos(labelAngle * Math.PI / 180);
+      const labelZ = radius * Math.sin(labelAngle * Math.PI / 180);
       
       label.setAttribute('value', `${data.year}: ${data.event}`);
       label.setAttribute('position', `${labelX} 0.2 ${labelZ}`);
@@ -213,7 +212,7 @@ this.el.appendChild(detail);    });
       </a-entity>
       
   <!-- Timeline -->
-  <a-entity
+ <a-entity
   id="timeline"
   position="0 2 -3"
   research-timeline>
