@@ -119,15 +119,16 @@
       arc.setAttribute('arc', segmentAngle);
       arc.setAttribute('color', data.color);
       arc.setAttribute('rotation', {
-        x: 90,
-        y: 0,
-        z: index * segmentAngle
-      });
+      x: 0,  
+  y: index * segmentAngle, 
+  z: 0
+});
       
       const label = document.createElement('a-text');
-      const labelAngle = index * segmentAngle;
-      const labelX = radius * Math.cos(labelAngle * Math.PI / 180);
-      const labelZ = radius * Math.sin(labelAngle * Math.PI / 180);
+    const labelAngle = index * segmentAngle;
+const labelX = radius * Math.cos(labelAngle * Math.PI / 180);
+const labelZ = radius * Math.sin(labelAngle * Math.PI / 180);
+label.setAttribute('position', `${labelX} 0 ${labelZ}`); 
       
       label.setAttribute('value', `${data.year}: ${data.event}`);
       label.setAttribute('position', `${labelX} 0.2 ${labelZ}`);
