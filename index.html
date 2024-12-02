@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>HIV Structure WebXR Experience</title>
+    <title>Harvard WebXR HIV Data Visualization</title>
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/handy-work/build/handy-controls.min.js"></script>
     <script>
       AFRAME.registerComponent('virus-core', {
         init: function() {
@@ -14,51 +15,37 @@
           core.setAttribute('metalness', '0.2');
           this.el.appendChild(core);
 
-          // Generate protein spikes
-          for (let i = 0; i < 60; i++) {
-            const phi = Math.acos(-1 + (2 * i) / 60);
-            const theta = Math.sqrt(60 * Math.PI) * phi;
+          // Generate more evenly distributed spikes using fibonacci sphere distribution
+          const numSpikes = 120;
+          const phi = Math.PI * (3 - Math.sqrt(5)); // golden angle
 
-            const x = 2 * Math.cos(theta) * Math.sin(phi);
-            const y = 2 * Math.sin(theta) * Math.sin(phi);
-            const z = 2 * Math.cos(phi);
+          for (let i = 0; i < numSpikes; i++) {
+            const y = 1 - (i / (numSpikes - 1)) * 2;
+            const radius = Math.sqrt(1 - y * y);
+            const theta = phi * i;
+
+            const x = Math.cos(theta) * radius;
+            const z = Math.sin(theta) * radius;
 
             const spike = document.createElement('a-entity');
             spike.setAttribute('geometry', {
               primitive: 'cone',
-              height: '0.8',
-              radiusBottom: '0.2',
-              radiusTop: '0.05'
+              height: '0.5',
+              radiusBottom: '0.15',
+              radiusTop: '0.02'
             });
             spike.setAttribute('material', {
               color: '#FF4444',
               roughness: 0.7,
               metalness: 0.2
             });
-            spike.setAttribute('position', `${x} ${y} ${z}`);
+            
+            spike.setAttribute('position', `${x * 2} ${y * 2} ${z * 2}`);
             spike.setAttribute('look-at', '0 0 0');
+            spike.setAttribute('rotation', '180 0 0');
+            
             this.el.appendChild(spike);
           }
-        }
-      });
-
-      AFRAME.registerComponent('info-point', {
-        schema: {
-          label: {type: 'string'},
-          description: {type: 'string'}
-        },
-        init: function() {
-          const point = document.createElement('a-sphere');
-          point.setAttribute('radius', '0.1');
-          point.setAttribute('color', '#FFFFFF');
-          this.el.appendChild(point);
-
-          const text = document.createElement('a-text');
-          text.setAttribute('value', this.data.label);
-          text.setAttribute('align', 'center');
-          text.setAttribute('position', '0 0.2 0');
-          text.setAttribute('scale', '0.5 0.5 0.5');
-          this.el.appendChild(text);
         }
       });
     </script>
@@ -79,21 +66,30 @@
         animation="property: rotation; to: 0 360 0; loop: true; dur: 30000; easing: linear">
       </a-entity>
 
-      <!-- Information points -->
-      <a-entity
-        position="-3 1.6 -4"
-        info-point="label: Surface Proteins; description: Viral envelope proteins">
-      </a-entity>
+      <!-- Hand tracking setup -->
+      <a-entity handy-controls="right:#right-gltf;materialOverride:right;" material="color:gold;metalness:1;roughness:0;">
+        <!-- Ray and Grip controls -->
+        <a-entity data-right="ray" raycaster="objects: .clickable; far: 10;">
+          <a-entity position="0 0 -0.22" class="pose-label" text="value: Interact to learn more; align: center;"></a-entity>
+        </a-entity>
+        <a-entity data-left="ray" raycaster="objects: .clickable; far: 10;">
+          <a-entity position="0 0 -0.22" class="pose-label" text="value: Interact to learn more; align: center;"></a-entity>
+        </a-entity>
 
-      <a-entity
-        position="3 1.6 -4"
-        info-point="label: Capsid Core; description: Houses viral RNA">
+        <!-- Magnetic interaction points -->
+        <a-entity id="right-magnet" data-right="grip" data-magnet=".magnet-right:not([data-no-magnet]),.magnet:not([data-no-magnet])" 
+                  grab-magnet-target="startEvents:squeezestart,pose_fist;stopEvents:pose_flat_fuseShort,squeezeend;"></a-entity>
+        <a-entity id="left-magnet" data-left="grip" data-magnet=".magnet-left:not([data-no-magnet]),.magnet:not([data-no-magnet])" 
+                  grab-magnet-target="startEvents:squeezestart,pose_fist;stopEvents:pose_flat_fuseShort,squeezeend;"></a-entity>
+
+        <!-- Hand position markers -->
+        <a-sphere id="right-no-magnet" data-right="grip" data-no-magnet radius="0.01" color="red"></a-sphere>
+        <a-sphere id="left-no-magnet" data-left="grip" data-no-magnet radius="0.01" color="red"></a-sphere>
       </a-entity>
 
       <!-- Camera rig -->
       <a-entity position="0 1.6 0">
         <a-camera></a-camera>
-        <a-cursor></a-cursor>
       </a-entity>
     </a-scene>
   </body>
