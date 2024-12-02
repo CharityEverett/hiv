@@ -115,7 +115,7 @@
       
       const arc = document.createElement('a-torus');
       arc.setAttribute('radius', radius);
-      arc.setAttribute('radius-tubular', '0.05');
+      arc.setAttribute('radius-tubular', '0.15');
       arc.setAttribute('arc', segmentAngle);
       arc.setAttribute('color', data.color);
       arc.setAttribute('rotation', {
@@ -216,7 +216,8 @@ this.el.appendChild(detail);    });
  <a-entity
   id="timeline"
   position="0 2 -3"
-  research-timeline>
+  research-timeline
+     animation="property: rotation; to: 0 360 0; loop: true; dur: 30000; easing: linear">
 </a-entity>
     </a-entity>
 
