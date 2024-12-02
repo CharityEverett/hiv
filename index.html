@@ -5,49 +5,62 @@
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/handy-work/build/handy-controls.min.js"></script>
     <script>
-      AFRAME.registerComponent('virus-core', {
-        init: function() {
-          // Create the gray core sphere
-          const core = document.createElement('a-sphere');
-          core.setAttribute('radius', '2');
-          core.setAttribute('color', '#808080');
-          core.setAttribute('roughness', '1');
-          core.setAttribute('metalness', '0.2');
-          this.el.appendChild(core);
+    AFRAME.registerComponent('virus-core', {
+  init: function() {
+    // Create the gray core sphere
+    const core = document.createElement('a-sphere');
+    core.setAttribute('radius', '2');
+    core.setAttribute('color', '#808080');
+    core.setAttribute('roughness', '1');
+    core.setAttribute('metalness', '0.2');
+    this.el.appendChild(core);
 
-          // Generate more evenly distributed spikes using fibonacci sphere distribution
-          const numSpikes = 120;
-          const phi = Math.PI * (3 - Math.sqrt(5)); // golden angle
+    // Generate spikes using fibonacci sphere distribution
+    const numSpikes = 120;
+    const phi = Math.PI * (3 - Math.sqrt(5));
 
-          for (let i = 0; i < numSpikes; i++) {
-            const y = 1 - (i / (numSpikes - 1)) * 2;
-            const radius = Math.sqrt(1 - y * y);
-            const theta = phi * i;
+    for (let i = 0; i < numSpikes; i++) {
+      const y = 1 - (i / (numSpikes - 1)) * 2;
+      const radius = Math.sqrt(1 - y * y);
+      const theta = phi * i;
 
-            const x = Math.cos(theta) * radius;
-            const z = Math.sin(theta) * radius;
+      const x = Math.cos(theta) * radius;
+      const z = Math.sin(theta) * radius;
 
-            const spike = document.createElement('a-entity');
-            spike.setAttribute('geometry', {
-              primitive: 'cone',
-              height: '0.5',
-              radiusBottom: '0.15',
-              radiusTop: '0.02'
-            });
-            spike.setAttribute('material', {
-              color: '#FF4444',
-              roughness: 0.7,
-              metalness: 0.2
-            });
-            
-            spike.setAttribute('position', `${x * 2} ${y * 2} ${z * 2}`);
-            spike.setAttribute('look-at', '0 0 0');
-            spike.setAttribute('rotation', '180 0 0');
-            
-            this.el.appendChild(spike);
-          }
-        }
+      const spike = document.createElement('a-entity');
+      spike.setAttribute('geometry', {
+        primitive: 'cone',
+        height: '0.5',
+        radiusTop: '0.15',    // Switched: wider at the top
+        radiusBottom: '0.02'  // Switched: narrower at the base
       });
+      spike.setAttribute('material', {
+        color: '#FF4444',
+        roughness: 0.7,
+        metalness: 0.2
+      });
+      
+      // Position spike with base touching sphere surface
+      spike.setAttribute('position', `${x * 2} ${y * 2} ${z * 2}`);
+      
+      // Calculate rotation to point outward from sphere center
+      const direction = new THREE.Vector3(x, y, z).normalize();
+      const quaternion = new THREE.Quaternion();
+      const up = new THREE.Vector3(0, 1, 0);
+      quaternion.setFromUnitVectors(up, direction);
+      const euler = new THREE.Euler().setFromQuaternion(quaternion);
+      
+      // Convert rotation to degrees and set
+      spike.setAttribute('rotation', {
+        x: THREE.MathUtils.radToDeg(euler.x),
+        y: THREE.MathUtils.radToDeg(euler.y),
+        z: THREE.MathUtils.radToDeg(euler.z)
+      });
+      
+      this.el.appendChild(spike);
+    }
+  }
+});
     </script>
   </head>
   <body>
