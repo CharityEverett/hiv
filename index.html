@@ -71,7 +71,7 @@
   }
 });
 
-    AFRAME.registerComponent('research-timeline', {
+  AFRAME.registerComponent('research-timeline', {
   init: function() {
     const timelineData = [
       {
@@ -106,33 +106,20 @@
       }
     ];
 
-  const radius = 3;
-const totalArcSpan = 360; // Complete circle
-const segmentArc = totalArcSpan / timelineData.length;
+    const radius = 3;
+    const totalArcSpan = 360;
+    const segmentArc = totalArcSpan / timelineData.length;
 
-timelineData.forEach((data, index) => {
-  const segment = document.createElement('a-entity');
-  const angleOffset = (index * segmentArc); // Start from 0 and go full circle
-  
-  // Position in a circle around the virus
-  segment.setAttribute('position', {
-    x: 0,
-    y: 0, 
-    z: 0
-  });
-  
-  // Rotate around Y-axis to form a ring
-  segment.setAttribute('rotation', {
-    x: 0,
-    y: angleOffset,
-    z: 0
-  });
-
-  // Text should face outward from the ring
-  const label = document.createElement('a-text');
-  label.setAttribute('position', `${radius + 0.2} 0 0`);
-  label.setAttribute('rotation', '0 -90 0'); // Face outward
-});
+    timelineData.forEach((data, index) => {
+      const segment = document.createElement('a-entity');
+      const angleOffset = (index * segmentArc);
+      
+      segment.setAttribute('position', {
+        x: 0,
+        y: 0,
+        z: 0
+      });
+      
       segment.setAttribute('rotation', {
         x: 0,
         y: angleOffset,
