@@ -39,11 +39,11 @@
       }
     </style>
     <script>
-AFRAME.registerComponent('virus-core', {
+      AFRAME.registerComponent('virus-core', {
         init: function() {
           const core = document.createElement('a-sphere');
           core.setAttribute('radius', '0.5');
-          core.setAttribute('color', '#800080'); // Changed to purple to match reference
+          core.setAttribute('color', '#800080');
           core.setAttribute('roughness', '1');
           core.setAttribute('metalness', '0.2');
           this.el.appendChild(core);
@@ -62,14 +62,14 @@ AFRAME.registerComponent('virus-core', {
             const spikeContainer = document.createElement('a-entity');
             
             const stem = document.createElement('a-cylinder');
-            stem.setAttribute('height', '0.6'); // Made longer
-            stem.setAttribute('radius', '0.008'); // Made thinner
-            stem.setAttribute('color', '#800080'); // Changed to purple
+            stem.setAttribute('height', '0.6');
+            stem.setAttribute('radius', '0.008');
+            stem.setAttribute('color', '#800080');
             
             const bulb = document.createElement('a-sphere');
-            bulb.setAttribute('radius', '0.05'); // Slightly larger bulb
+            bulb.setAttribute('radius', '0.05');
             bulb.setAttribute('color', '#4444FF');
-            bulb.setAttribute('position', '0 0.3 0'); // Adjusted for longer stem
+            bulb.setAttribute('position', '0 0.3 0');
             
             spikeContainer.appendChild(stem);
             spikeContainer.appendChild(bulb);
@@ -104,12 +104,6 @@ AFRAME.registerComponent('virus-core', {
         }
       });
 
-// Add environment for VR mode
-<a-scene>
-  <a-sky color="#000033"></a-sky> // Dark blue background
-  <a-entity light="type: ambient; intensity: 0.6"></a-entity>
-  <a-entity light="type: directional; intensity: 0.8; position: -1 1 1; castShadow: true"></a-entity>
-</a-scene>
       AFRAME.registerComponent('wrist-tracking', {
         init: function() {
           if (!navigator.xr) {
@@ -129,7 +123,6 @@ AFRAME.registerComponent('virus-core', {
         },
 
         onSelect: function(event) {
-          // Update virus model position to wrist location
           const frame = event.frame;
           const pose = frame.getPose(event.inputSource.targetRaySpace, this.el.sceneEl.renderer.xr.getReferenceSpace());
           if (pose) {
@@ -162,8 +155,9 @@ AFRAME.registerComponent('virus-core', {
     <button id="toggle-mode">Toggle AR/VR</button>
 
     <a-scene embedded arjs='sourceType: webcam; debugUIEnabled: false;' renderer="antialias: true">
-      <a-entity light="type: ambient; intensity: 0.5"></a-entity>
-      <a-entity light="type: directional; intensity: 0.8; position: -1 1 1"></a-entity>
+      <a-sky color="#000033"></a-sky>
+      <a-entity light="type: ambient; intensity: 0.6"></a-entity>
+      <a-entity light="type: directional; intensity: 0.8; position: -1 1 1; castShadow: true"></a-entity>
 
       <a-entity
         id="virus-model"
