@@ -39,6 +39,30 @@
       }
     </style>
     <script>
+      AFRAME.registerComponent('vr-mode-switch', {
+  init: function() {
+    this.el.sceneEl.addEventListener('enter-vr', () => {
+      if (!this.el.sceneEl.is('ar-mode')) {
+        // Set fixed position for VR viewing
+        this.el.setAttribute('position', '0 1.6 -3');
+        // Add environment for VR mode
+        document.querySelector('a-sky').setAttribute('visible', 'true');
+      }
+    });
+  }
+});
+      AFRAME.registerComponent('ar-mode-switch', {
+  init: function() {
+    this.el.sceneEl.addEventListener('enter-ar', () => {
+      // Hide VR environment elements
+      document.querySelector('a-sky').setAttribute('visible', 'false');
+      // Enable wrist tracking
+      this.el.setAttribute('wrist-tracking', '');
+      // Adjust scale for AR viewing
+      this.el.setAttribute('scale', '0.5 0.5 0.5');
+    });
+  }
+});
       AFRAME.registerComponent('virus-core', {
         init: function() {
           const core = document.createElement('a-sphere');
