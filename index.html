@@ -64,56 +64,38 @@
         }
       });
 
-      AFRAME.registerComponent('research-timeline', {
+    AFRAME.registerComponent('research-timeline', {
   init: function() {
-    const timelineData = [
-      { year: 1981, event: "First AIDS cases reported", color: "#FF7F50" },
-      { year: 1983, event: "HIV virus identified", color: "#98FB98" },
-      { year: 1987, event: "First antiretroviral drug", color: "#87CEEB" },
-      // Add more milestones from the Harvard article
-    ];
-
-    const radius = 1.5; // Distance from virus center
-    const segments = timelineData.length;
-    const angleStep = (2 * Math.PI) / segments;
+    const radius = 3; // Increased radius to surround virus
+    const segmentArc = 30; // Degrees per segment
+    const startHeight = 0; // Same height as virus
 
     timelineData.forEach((data, index) => {
-      // Create timeline segment
       const segment = document.createElement('a-entity');
+      const angleOffset = (index * segmentArc);
       
-      // Create arc
-      const arc = document.createElement('a-torus');
-      arc.setAttribute('radius', radius);
-      arc.setAttribute('radius-tubular', '0.02');
-      arc.setAttribute('arc', '30');
-      arc.setAttribute('rotation', {
+      // Position segment in a circle around virus
+      segment.setAttribute('position', {
         x: 0,
-        y: (index * angleStep * 180) / Math.PI,
+        y: startHeight,
         z: 0
       });
+      segment.setAttribute('rotation', {
+        x: 0,
+        y: angleOffset,
+        z: 0
+      });
+
+      // Create arc segment
+      const arc = document.createElement('a-torus');
+      arc.setAttribute('radius', radius);
+      arc.setAttribute('radius-tubular', '0.05');
+      arc.setAttribute('arc', segmentArc);
       arc.setAttribute('color', data.color);
       
-      // Create text label
-      const text = document.createElement('a-text');
-      const textPosition = this.calculateTextPosition(radius + 0.2, index * angleStep);
-      text.setAttribute('value', `${data.year}: ${data.event}`);
-      text.setAttribute('position', textPosition);
-      text.setAttribute('width', 1);
-      text.setAttribute('align', 'center');
-      text.setAttribute('look-at', '0 0 0');
-      
       segment.appendChild(arc);
-      segment.appendChild(text);
       this.el.appendChild(segment);
     });
-  },
-
-  calculateTextPosition: function(radius, angle) {
-    return {
-      x: radius * Math.cos(angle),
-      y: radius * Math.sin(angle),
-      z: 0
-    };
   }
 });
 
@@ -170,12 +152,10 @@ this.el.appendChild(detail);    });
       <!-- Environment -->
       <a-entity light="type: ambient; intensity: 0.5"></a-entity>
       <a-entity light="type: directional; intensity: 0.8; position: -1 1 1"></a-entity>
-<!-- Timeline -->
+
       <a-entity
-  id="timeline"
-  position="0 0 -2"
-  research-timeline>
-</a-entity>
+  id="visualization-container"
+  position="0 0 -2">
       <!-- Virus Model -->
       <a-entity
         id="virus-model"
@@ -185,6 +165,14 @@ this.el.appendChild(detail);    });
         clickable
         animation="property: rotation; to: 0 360 0; loop: true; dur: 30000; easing: linear">
       </a-entity>
+      
+  <!-- Timeline -->
+  <a-entity
+  id="timeline"
+  position="0 0 -2"
+  research-timeline>
+</a-entity>
+    </a-entity>
 
       <!-- Camera -->
       <a-entity position="0 0 0">
