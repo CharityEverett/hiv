@@ -73,7 +73,38 @@
 
   AFRAME.registerComponent('research-timeline', {
   init: function() {
-    const timelineData = [/* previous data array */];
+    const timelineData = [
+      {
+        year: 1981,
+        event: "First AIDS cases reported",
+        color: "#00FFFF",
+        impact: "CDC reports first cases of rare pneumonia in young gay men"
+      },
+      {
+        year: 1983,
+        event: "HIV virus identified",
+        color: "#4169E1",
+        impact: "Français and Gallo identify HIV as cause of AIDS"
+      },
+      {
+        year: 1987,
+        event: "First antiretroviral drug",
+        color: "#9370DB",
+        impact: "FDA approves AZT as first HIV treatment"
+      },
+      {
+        year: 2004,
+        event: "AIDS deaths peaked globally",
+        color: "#7B68EE",
+        impact: "Global response intensifies as deaths reach highest point"
+      },
+      {
+        year: 2016,
+        event: "UN 2030 commitment",
+        color: "#4B0082",
+        impact: "United Nations commits to ending AIDS epidemic by 2030"
+      }
+    ];
 
     const radius = 3;
     const segmentCount = timelineData.length;
@@ -82,19 +113,17 @@
     timelineData.forEach((data, index) => {
       const segment = document.createElement('a-entity');
       
-      // Create the torus segment
       const arc = document.createElement('a-torus');
       arc.setAttribute('radius', radius);
       arc.setAttribute('radius-tubular', '0.05');
       arc.setAttribute('arc', segmentAngle);
       arc.setAttribute('color', data.color);
       arc.setAttribute('rotation', {
-        x: 90, // Rotate to be horizontal
+        x: 90,
         y: 0,
-        z: index * segmentAngle // Rotate each segment to its position
+        z: index * segmentAngle
       });
       
-      // Create text label
       const label = document.createElement('a-text');
       const labelAngle = index * segmentAngle;
       const labelX = radius * Math.cos(labelAngle * Math.PI / 180);
