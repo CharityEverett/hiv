@@ -73,34 +73,121 @@
 
     AFRAME.registerComponent('research-timeline', {
   init: function() {
-    const radius = 3; // Increased radius to surround virus
-    const segmentArc = 30; // Degrees per segment
-    const startHeight = 0; // Same height as virus
+    const timelineData = [
+      {
+        year: 1981,
+        event: "First AIDS cases reported",
+        color: "#4169E1",
+        impact: "CDC reports first cases of rare pneumonia in young gay men"
+      },
+      {
+        year: 1983,
+        event: "HIV virus identified",
+        color: "#00FFFF",
+        impact: "Français and Gallo identify HIV as cause of AIDS"
+      },
+      {
+        year: 1987,
+        event: "First antiretroviral drug",
+        color: "#4B0082",
+        impact: "FDA approves AZT as first HIV treatment"
+      },
+      {
+        year: 2004,
+        event: "AIDS deaths peaked globally",
+        color: "#9370DB",
+        impact: "Global response intensifies as deaths reach highest point"
+      },
+      {
+        year: 2016,
+        event: "UN 2030 commitment",
+        color: "#7B68EE",
+        impact: "United Nations commits to ending AIDS epidemic by 2030"
+      }
+    ];
+
+    const radius = 3;
+    const segmentArc = 30;
+    const startHeight = 0;
 
     timelineData.forEach((data, index) => {
       const segment = document.createElement('a-entity');
       const angleOffset = (index * segmentArc);
       
-      // Position segment in a circle around virus
       segment.setAttribute('position', {
         x: 0,
         y: startHeight,
         z: 0
       });
+      
       segment.setAttribute('rotation', {
         x: 0,
         y: angleOffset,
         z: 0
       });
 
-      // Create arc segment
       const arc = document.createElement('a-torus');
       arc.setAttribute('radius', radius);
       arc.setAttribute('radius-tubular', '0.05');
       arc.setAttribute('arc', segmentArc);
       arc.setAttribute('color', data.color);
+      arc.setAttribute('segments-tubular', 6);
+      arc.setAttribute('segments-radial', 8);
       
+      const label = document.createElement('a-text');
+      label.setAttribute('value', `${data.year}: ${data.event}`);
+      label.setAttribute('position', `${radius + 0.2} 0 0`);
+      label.setAttribute('rotation', '0 0 0');
+      label.setAttribute('width', 2);
+      label.setAttribute('align', 'left');
+      label.setAttribute('color', 'white');
+
       segment.appendChild(arc);
+      segment.appendChild(label);
+      
+      arc.addEventListener('click', function() {
+        const detail = document.createElement('a-plane');
+        detail.setAttribute('position', '0 0 -1');
+        detail.setAttribute('width', '2');
+        detail.setAttribute('height', '1');
+        detail.setAttribute('color', '#000033');
+        detail.setAttribute('opacity', '0.9');
+
+        const title = document.createElement('a-text');
+        title.setAttribute('value', data.year);
+        title.setAttribute('position', '-0.9 0.4 0.01');
+        title.setAttribute('color', 'white');
+        title.setAttribute('width', '1.8');
+
+        const description = document.createElement('a-text');
+        description.setAttribute('value', data.event);
+        description.setAttribute('position', '-0.9 0.2 0.01');
+        description.setAttribute('color', 'white');
+        description.setAttribute('width', '1.8');
+        description.setAttribute('wrap-count', '40');
+
+        const impact = document.createElement('a-text');
+        impact.setAttribute('value', data.impact);
+        impact.setAttribute('position', '-0.9 -0.2 0.01');
+        description.setAttribute('color', '#00FFFF');
+        impact.setAttribute('width', '1.8');
+        impact.setAttribute('wrap-count', '40');
+
+        const closeButton = document.createElement('a-text');
+        closeButton.setAttribute('value', 'X');
+        closeButton.setAttribute('position', '0.9 0.4 0.01');
+        closeButton.setAttribute('color', 'red');
+        closeButton.addEventListener('click', function() {
+          detail.parentNode.removeChild(detail);
+        });
+
+        detail.appendChild(title);
+        detail.appendChild(description);
+        detail.appendChild(impact);
+        detail.appendChild(closeButton);
+        this.appendChild(detail);
+      });
+
       this.el.appendChild(segment);
     });
   }
