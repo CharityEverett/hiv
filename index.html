@@ -13,26 +13,63 @@
     <script>
      AFRAME.registerComponent('virus-core', {
   init: function() {
+    // Create core sphere
     const core = document.createElement('a-sphere');
     core.setAttribute('radius', '0.5');
-    core.setAttribute('color', '#9932CC'); // Changed to darker purple
-    core.setAttribute('roughness', '1');
-    core.setAttribute('metalness', '0.2');
+    core.setAttribute('color', '#9932CC');
+    core.setAttribute('roughness', '0.7');
+    core.setAttribute('metalness', '0.3');
     this.el.appendChild(core);
 
-    // ... rest of the spike generation code ...
-    
-    const stem = document.createElement('a-cylinder');
-    stem.setAttribute('height', '0.6');
-    stem.setAttribute('radius', '0.008');
-    stem.setAttribute('color', '#9932CC'); // Matching purple
-    
-    const bulb = document.createElement('a-sphere');
-    bulb.setAttribute('radius', '0.05');
-    bulb.setAttribute('color', '#00BFFF'); // Changed to deeper blue
-    bulb.setAttribute('position', '0 0.3 0');
+    // Generate spikes using fibonacci distribution
+    const numSpikes = 120; // Increased for denser distribution
+    const phi = Math.PI * (3 - Math.sqrt(5));
+
+    for (let i = 0; i < numSpikes; i++) {
+      const y = 1 - (i / (numSpikes - 1)) * 2;
+      const radius = Math.sqrt(1 - y * y);
+      const theta = phi * i;
+
+      const x = Math.cos(theta) * radius;
+      const z = Math.sin(theta) * radius;
+
+      const spikeContainer = document.createElement('a-entity');
+      
+      // Create longer, thinner stem
+      const stem = document.createElement('a-cylinder');
+      stem.setAttribute('height', '0.8');
+      stem.setAttribute('radius', '0.006');
+      stem.setAttribute('color', '#9932CC');
+      
+      // Create larger bulb
+      const bulb = document.createElement('a-sphere');
+      bulb.setAttribute('radius', '0.06');
+      bulb.setAttribute('color', '#00BFFF');
+      bulb.setAttribute('position', '0 0.4 0');
+      
+      spikeContainer.appendChild(stem);
+      spikeContainer.appendChild(bulb);
+      
+      // Position spike container
+      spikeContainer.setAttribute('position', `${x * 0.5} ${y * 0.5} ${z * 0.5}`);
+      
+      // Calculate rotation to point outward
+      const direction = new THREE.Vector3(x, y, z).normalize();
+      const quaternion = new THREE.Quaternion();
+      const up = new THREE.Vector3(0, 1, 0);
+      quaternion.setFromUnitVectors(up, direction);
+      const euler = new THREE.Euler().setFromQuaternion(quaternion);
+      
+      spikeContainer.setAttribute('rotation', {
+        x: THREE.MathUtils.radToDeg(euler.x),
+        y: THREE.MathUtils.radToDeg(euler.y),
+        z: THREE.MathUtils.radToDeg(euler.z)
+      });
+      
+      this.el.appendChild(spikeContainer);
+    }
   }
-     });
+});
       AFRAME.registerComponent('clickable', {
         init: function() {
           this.el.addEventListener('click', function() {
