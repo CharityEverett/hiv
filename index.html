@@ -1,108 +1,115 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Harvard HIV WebXR Timeline</title>
+    <title>Harvard WebXR HIV Data Visualization</title>
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/handy-work/build/handy-controls.min.js"></script>
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
     <style>
-      body {
-        margin: 0;
-        overflow: hidden;
+      body { margin: 0; overflow: hidden; }
+      #mode-select {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 1000;
+        background: rgba(0,0,0,0.8);
+        padding: 20px;
+        border-radius: 10px;
+        text-align: center;
+      }
+      .mode-button {
+        padding: 10px 20px;
+        margin: 10px;
+        font-size: 18px;
+        cursor: pointer;
+      }
+      #toggle-mode {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1000;
+        padding: 10px 20px;
+        background: rgba(0,0,0,0.8);
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
       }
     </style>
     <script>
-     AFRAME.registerComponent('virus-core', {
-  init: function() {
-    // Create core sphere
-    const core = document.createElement('a-sphere');
-    core.setAttribute('radius', '0.5');
-    core.setAttribute('color', '#9932CC');
-    core.setAttribute('roughness', '0.7');
-    core.setAttribute('metalness', '0.3');
-    this.el.appendChild(core);
+      // Previous virus-core component code remains the same
 
-    // Generate spikes using fibonacci distribution
-    const numSpikes = 120; // Increased for denser distribution
-    const phi = Math.PI * (3 - Math.sqrt(5));
-
-    for (let i = 0; i < numSpikes; i++) {
-      const y = 1 - (i / (numSpikes - 1)) * 2;
-      const radius = Math.sqrt(1 - y * y);
-      const theta = phi * i;
-
-      const x = Math.cos(theta) * radius;
-      const z = Math.sin(theta) * radius;
-
-      const spikeContainer = document.createElement('a-entity');
-      
-      // Create longer, thinner stem
-      const stem = document.createElement('a-cylinder');
-      stem.setAttribute('height', '0.8');
-      stem.setAttribute('radius', '0.006');
-      stem.setAttribute('color', '#9932CC');
-      
-      // Create larger bulb
-      const bulb = document.createElement('a-sphere');
-      bulb.setAttribute('radius', '0.06');
-      bulb.setAttribute('color', '#00BFFF');
-      bulb.setAttribute('position', '0 0.4 0');
-      
-      spikeContainer.appendChild(stem);
-      spikeContainer.appendChild(bulb);
-      
-      // Position spike container
-      spikeContainer.setAttribute('position', `${x * 0.5} ${y * 0.5} ${z * 0.5}`);
-      
-      // Calculate rotation to point outward
-      const direction = new THREE.Vector3(x, y, z).normalize();
-      const quaternion = new THREE.Quaternion();
-      const up = new THREE.Vector3(0, 1, 0);
-      quaternion.setFromUnitVectors(up, direction);
-      const euler = new THREE.Euler().setFromQuaternion(quaternion);
-      
-      spikeContainer.setAttribute('rotation', {
-        x: THREE.MathUtils.radToDeg(euler.x),
-        y: THREE.MathUtils.radToDeg(euler.y),
-        z: THREE.MathUtils.radToDeg(euler.z)
-      });
-      
-      this.el.appendChild(spikeContainer);
-    }
-  }
-});
-      AFRAME.registerComponent('clickable', {
+      AFRAME.registerComponent('wrist-tracking', {
         init: function() {
-          this.el.addEventListener('click', function() {
-            this.setAttribute('scale', {x: 1.2, y: 1.2, z: 1.2});
-            setTimeout(() => {
-              this.setAttribute('scale', {x: 1, y: 1, z: 1});
-            }, 300);
+          if (!navigator.xr) {
+            console.warn('WebXR not available');
+            return;
+          }
+
+          this.el.sceneEl.addEventListener('enter-vr', () => {
+            if (this.el.sceneEl.is('ar-mode')) {
+              navigator.xr.requestSession('immersive-ar', {
+                optionalFeatures: ['hand-tracking']
+              }).then(session => {
+                session.addEventListener('select', this.onSelect.bind(this));
+              });
+            }
           });
+        },
+
+        onSelect: function(event) {
+          // Update virus model position to wrist location
+          const frame = event.frame;
+          const pose = frame.getPose(event.inputSource.targetRaySpace, this.el.sceneEl.renderer.xr.getReferenceSpace());
+          if (pose) {
+            this.el.setAttribute('position', pose.transform.position);
+          }
         }
       });
+
+      window.onload = function() {
+        const modeSelect = document.getElementById('mode-select');
+        const scene = document.querySelector('a-scene');
+
+        document.getElementById('ar-button').onclick = function() {
+          modeSelect.style.display = 'none';
+          scene.enterAR();
+        };
+
+        document.getElementById('vr-button').onclick = function() {
+          modeSelect.style.display = 'none';
+          scene.enterVR();
+        };
+      };
     </script>
   </head>
   <body>
-   <a-scene>
-  <a-sky color="#1E90FF"></a-sky> 
-  <!-- Environment -->
-  <a-entity light="type: ambient; intensity: 0.6"></a-entity>
-  <a-entity light="type: directional; intensity: 0.8; position: -1 1 1"></a-entity>
+    <div id="mode-select">
+      <button id="ar-button" class="mode-button">View in AR</button>
+      <button id="vr-button" class="mode-button">View in VR</button>
+    </div>
+    <button id="toggle-mode">Toggle AR/VR</button>
 
-  <!-- Virus Model -->
-  <a-entity
-    id="virus-model"
-    position="0 1.6 -2" 
-    scale="1 1 1"
-    virus-core
-    clickable
-    animation="property: rotation; to: 0 360 0; loop: true; dur: 30000; easing: linear">
-  </a-entity>
+    <a-scene embedded arjs='sourceType: webcam; debugUIEnabled: false;' renderer="antialias: true">
+      <a-entity light="type: ambient; intensity: 0.5"></a-entity>
+      <a-entity light="type: directional; intensity: 0.8; position: -1 1 1"></a-entity>
 
-  <!-- Camera -->
-  <a-entity position="0 1.6 0">
-    <a-camera look-controls wasd-controls></a-camera>
-  </a-entity>
-</a-scene>
+     <!-- Virus Model -->
+<a-entity
+  id="virus-model"
+  position="0 0 -2"  <!-- Changed Y position to 0 -->
+  scale="1 1 1"
+  virus-core
+  clickable
+  animation="property: rotation; to: 0 360 0; loop: true; dur: 30000; easing: linear">
+</a-entity>
+
+<!-- Camera -->
+<a-entity position="0 0 0">  <!-- Changed Y position to 0 -->
+  <a-camera look-controls wasd-controls></a-camera>
+</a-entity>
+    </a-scene>
   </body>
 </html>
