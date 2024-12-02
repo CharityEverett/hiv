@@ -77,42 +77,44 @@
       {
         year: 1981,
         event: "First AIDS cases reported",
-        color: "#4169E1",
+        color: "#00FFFF",
         impact: "CDC reports first cases of rare pneumonia in young gay men"
       },
       {
         year: 1983,
         event: "HIV virus identified",
-        color: "#00FFFF",
+        color: "#4169E1",
         impact: "Français and Gallo identify HIV as cause of AIDS"
       },
       {
         year: 1987,
         event: "First antiretroviral drug",
-        color: "#4B0082",
+        color: "#9370DB",
         impact: "FDA approves AZT as first HIV treatment"
       },
       {
         year: 2004,
         event: "AIDS deaths peaked globally",
-        color: "#9370DB",
+        color: "#7B68EE",
         impact: "Global response intensifies as deaths reach highest point"
       },
       {
         year: 2016,
         event: "UN 2030 commitment",
-        color: "#7B68EE",
+        color: "#4B0082",
         impact: "United Nations commits to ending AIDS epidemic by 2030"
       }
     ];
 
     const radius = 3;
-    const segmentArc = 30;
-    const startHeight = 0;
+    const startAngle = -90;
+    const totalArcSpan = 180;
+    const segmentArc = totalArcSpan / timelineData.length;
+    const startHeight = 0.5; // Raised slightly above virus
 
     timelineData.forEach((data, index) => {
       const segment = document.createElement('a-entity');
-      const angleOffset = (index * segmentArc);
+      const angleOffset = startAngle + (index * segmentArc);
       
       segment.setAttribute('position', {
         x: 0,
@@ -137,10 +139,10 @@
       const label = document.createElement('a-text');
       label.setAttribute('value', `${data.year}: ${data.event}`);
       label.setAttribute('position', `${radius + 0.2} 0 0`);
-      label.setAttribute('rotation', '0 0 0');
+      label.setAttribute('rotation', '0 -90 0');
       label.setAttribute('width', 2);
       label.setAttribute('align', 'left');
-      label.setAttribute('color', 'white');
+      label.setAttribute('color', '#00FFFF');
 
       segment.appendChild(arc);
       segment.appendChild(label);
@@ -156,27 +158,27 @@
         const title = document.createElement('a-text');
         title.setAttribute('value', data.year);
         title.setAttribute('position', '-0.9 0.4 0.01');
-        title.setAttribute('color', 'white');
+        title.setAttribute('color', '#00FFFF');
         title.setAttribute('width', '1.8');
 
         const description = document.createElement('a-text');
         description.setAttribute('value', data.event);
         description.setAttribute('position', '-0.9 0.2 0.01');
-        description.setAttribute('color', 'white');
+        description.setAttribute('color', '#00FFFF');
         description.setAttribute('width', '1.8');
         description.setAttribute('wrap-count', '40');
 
         const impact = document.createElement('a-text');
         impact.setAttribute('value', data.impact);
         impact.setAttribute('position', '-0.9 -0.2 0.01');
-        description.setAttribute('color', '#00FFFF');
+        impact.setAttribute('color', '#00FFFF');
         impact.setAttribute('width', '1.8');
         impact.setAttribute('wrap-count', '40');
 
         const closeButton = document.createElement('a-text');
         closeButton.setAttribute('value', 'X');
         closeButton.setAttribute('position', '0.9 0.4 0.01');
-        closeButton.setAttribute('color', 'red');
+        closeButton.setAttribute('color', '#FF4444');
         closeButton.addEventListener('click', function() {
           detail.parentNode.removeChild(detail);
         });
