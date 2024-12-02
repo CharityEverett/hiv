@@ -64,6 +64,93 @@
         }
       });
 
+      AFRAME.registerComponent('research-timeline', {
+  init: function() {
+    const timelineData = [
+      { year: 1981, event: "First AIDS cases reported", color: "#FF7F50" },
+      { year: 1983, event: "HIV virus identified", color: "#98FB98" },
+      { year: 1987, event: "First antiretroviral drug", color: "#87CEEB" },
+      // Add more milestones from the Harvard article
+    ];
+
+    const radius = 1.5; // Distance from virus center
+    const segments = timelineData.length;
+    const angleStep = (2 * Math.PI) / segments;
+
+    timelineData.forEach((data, index) => {
+      // Create timeline segment
+      const segment = document.createElement('a-entity');
+      
+      // Create arc
+      const arc = document.createElement('a-torus');
+      arc.setAttribute('radius', radius);
+      arc.setAttribute('radius-tubular', '0.02');
+      arc.setAttribute('arc', '30');
+      arc.setAttribute('rotation', {
+        x: 0,
+        y: (index * angleStep * 180) / Math.PI,
+        z: 0
+      });
+      arc.setAttribute('color', data.color);
+      
+      // Create text label
+      const text = document.createElement('a-text');
+      const textPosition = this.calculateTextPosition(radius + 0.2, index * angleStep);
+      text.setAttribute('value', `${data.year}: ${data.event}`);
+      text.setAttribute('position', textPosition);
+      text.setAttribute('width', 1);
+      text.setAttribute('align', 'center');
+      text.setAttribute('look-at', '0 0 0');
+      
+      segment.appendChild(arc);
+      segment.appendChild(text);
+      this.el.appendChild(segment);
+    });
+  },
+
+  calculateTextPosition: function(radius, angle) {
+    return {
+      x: radius * Math.cos(angle),
+      y: radius * Math.sin(angle),
+      z: 0
+    };
+  }
+});
+
+      AFRAME.registerComponent('timeline-segment', {
+  init: function() {
+    this.el.addEventListener('click', function() {
+      // Show detailed information
+     const detail = document.createElement('a-plane');
+detail.setAttribute('position', '0 0 -1');
+detail.setAttribute('width', '2');
+detail.setAttribute('height', '1');
+detail.setAttribute('color', '#000033');
+detail.setAttribute('opacity', '0.9');
+// Add impact text
+const impact = document.createElement('a-text');
+impact.setAttribute('value', data.impact);
+impact.setAttribute('position', '-0.9 -0.2 0.01');
+impact.setAttribute('color', '#00BFFF');
+impact.setAttribute('width', '1.8');
+impact.setAttribute('wrap-count', '40');
+
+// Add close button
+const closeButton = document.createElement('a-text');
+closeButton.setAttribute('value', 'X');
+closeButton.setAttribute('position', '0.9 0.4 0.01');
+closeButton.setAttribute('color', 'red');
+closeButton.addEventListener('click', function() {
+  detail.parentNode.removeChild(detail);
+});
+
+detail.appendChild(title);
+detail.appendChild(description);
+detail.appendChild(impact);
+detail.appendChild(closeButton);
+this.el.appendChild(detail);    });
+  }
+});
       AFRAME.registerComponent('clickable', {
         init: function() {
           this.el.addEventListener('click', function() {
@@ -83,7 +170,12 @@
       <!-- Environment -->
       <a-entity light="type: ambient; intensity: 0.5"></a-entity>
       <a-entity light="type: directional; intensity: 0.8; position: -1 1 1"></a-entity>
-
+<!-- Timeline -->
+      <a-entity
+  id="timeline"
+  position="0 0 -2"
+  research-timeline>
+</a-entity>
       <!-- Virus Model -->
       <a-entity
         id="virus-model"
