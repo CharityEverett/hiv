@@ -106,22 +106,33 @@
       }
     ];
 
-    const radius = 3;
-    const startAngle = -90;
-    const totalArcSpan = 180;
-    const segmentArc = totalArcSpan / timelineData.length;
-    const startHeight = 0.5; // Raised slightly above virus
+  const radius = 3;
+const totalArcSpan = 360; // Complete circle
+const segmentArc = totalArcSpan / timelineData.length;
 
-    timelineData.forEach((data, index) => {
-      const segment = document.createElement('a-entity');
-      const angleOffset = startAngle + (index * segmentArc);
-      
-      segment.setAttribute('position', {
-        x: 0,
-        y: startHeight,
-        z: 0
-      });
-      
+timelineData.forEach((data, index) => {
+  const segment = document.createElement('a-entity');
+  const angleOffset = (index * segmentArc); // Start from 0 and go full circle
+  
+  // Position in a circle around the virus
+  segment.setAttribute('position', {
+    x: 0,
+    y: 0, 
+    z: 0
+  });
+  
+  // Rotate around Y-axis to form a ring
+  segment.setAttribute('rotation', {
+    x: 0,
+    y: angleOffset,
+    z: 0
+  });
+
+  // Text should face outward from the ring
+  const label = document.createElement('a-text');
+  label.setAttribute('position', `${radius + 0.2} 0 0`);
+  label.setAttribute('rotation', '0 -90 0'); // Face outward
+});
       segment.setAttribute('rotation', {
         x: 0,
         y: angleOffset,
