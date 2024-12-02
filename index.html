@@ -1,31 +1,23 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><!DOCTYPE html>
-<html>
-  <head>
-    <title>HIV Structure WebXR Experience</title>
+    <title>Harvard WebXR HIV Data Visualization</title>
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/handy-work/build/handy-controls.min.js"></script>
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
     <style>
-      body {
-        margin: 0;
-        overflow: hidden;
-      }
+      body { margin: 0; overflow: hidden; }
     </style>
     <script>
       AFRAME.registerComponent('virus-core', {
         init: function() {
-          // Create the gray core sphere
           const core = document.createElement('a-sphere');
           core.setAttribute('radius', '0.5');
-          core.setAttribute('color', '#404040');
+          core.setAttribute('color', '#800080'); // Changed to purple to match reference
           core.setAttribute('roughness', '1');
           core.setAttribute('metalness', '0.2');
           this.el.appendChild(core);
 
-          // Generate spikes using fibonacci distribution
           const numSpikes = 60;
           const phi = Math.PI * (3 - Math.sqrt(5));
 
@@ -37,29 +29,23 @@
             const x = Math.cos(theta) * radius;
             const z = Math.sin(theta) * radius;
 
-            // Create spike container
             const spikeContainer = document.createElement('a-entity');
             
-            // Create spike stem (cylinder)
             const stem = document.createElement('a-cylinder');
-            stem.setAttribute('height', '0.4');
-            stem.setAttribute('radius', '0.01');
-            stem.setAttribute('color', '#FF4444');
+            stem.setAttribute('height', '0.6'); // Made longer
+            stem.setAttribute('radius', '0.008'); // Made thinner
+            stem.setAttribute('color', '#800080'); // Changed to purple
             
-            // Create bulb at the end (sphere)
             const bulb = document.createElement('a-sphere');
-            bulb.setAttribute('radius', '0.04');
+            bulb.setAttribute('radius', '0.05'); // Slightly larger bulb
             bulb.setAttribute('color', '#4444FF');
-            bulb.setAttribute('position', '0 0.2 0');
+            bulb.setAttribute('position', '0 0.3 0'); // Adjusted for longer stem
             
-            // Add stem and bulb to container
             spikeContainer.appendChild(stem);
             spikeContainer.appendChild(bulb);
             
-            // Position spike container
             spikeContainer.setAttribute('position', `${x * 0.5} ${y * 0.5} ${z * 0.5}`);
             
-            // Calculate rotation to point outward
             const direction = new THREE.Vector3(x, y, z).normalize();
             const quaternion = new THREE.Quaternion();
             const up = new THREE.Vector3(0, 1, 0);
@@ -77,7 +63,6 @@
         }
       });
 
-      // Add interaction component
       AFRAME.registerComponent('clickable', {
         init: function() {
           this.el.addEventListener('click', function() {
@@ -92,11 +77,9 @@
   </head>
   <body>
     <a-scene embedded arjs='sourceType: webcam; debugUIEnabled: false;' renderer="antialias: true">
-      <!-- Environment -->
       <a-entity light="type: ambient; intensity: 0.5"></a-entity>
       <a-entity light="type: directional; intensity: 0.8; position: -1 1 1"></a-entity>
 
-      <!-- Marker-based AR -->
       <a-marker preset="hiro">
         <a-entity
           id="virus-model"
@@ -108,117 +91,7 @@
         </a-entity>
       </a-marker>
 
-      <!-- Camera -->
-      <a-entity camera></a-entity>
-    </a-scene>
-  </body>
-</html></title>
-    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/handy-work/build/handy-controls.min.js"></script>
-    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
-    <style>
-      body {
-        margin: 0;
-        overflow: hidden;
-      }
-    </style>
-    <script>
-      AFRAME.registerComponent('virus-core', {
-        init: function() {
-          // Create the gray core sphere
-          const core = document.createElement('a-sphere');
-          core.setAttribute('radius', '0.5');
-          core.setAttribute('color', '#404040');
-          core.setAttribute('roughness', '1');
-          core.setAttribute('metalness', '0.2');
-          this.el.appendChild(core);
-
-          // Generate spikes using fibonacci distribution
-          const numSpikes = 60;
-          const phi = Math.PI * (3 - Math.sqrt(5));
-
-          for (let i = 0; i < numSpikes; i++) {
-            const y = 1 - (i / (numSpikes - 1)) * 2;
-            const radius = Math.sqrt(1 - y * y);
-            const theta = phi * i;
-
-            const x = Math.cos(theta) * radius;
-            const z = Math.sin(theta) * radius;
-
-            // Create spike container
-            const spikeContainer = document.createElement('a-entity');
-            
-            // Create spike stem (cylinder)
-            const stem = document.createElement('a-cylinder');
-            stem.setAttribute('height', '0.4');
-            stem.setAttribute('radius', '0.01');
-            stem.setAttribute('color', '#FF4444');
-            
-            // Create bulb at the end (sphere)
-            const bulb = document.createElement('a-sphere');
-            bulb.setAttribute('radius', '0.04');
-            bulb.setAttribute('color', '#4444FF');
-            bulb.setAttribute('position', '0 0.2 0');
-            
-            // Add stem and bulb to container
-            spikeContainer.appendChild(stem);
-            spikeContainer.appendChild(bulb);
-            
-            // Position spike container
-            spikeContainer.setAttribute('position', `${x * 0.5} ${y * 0.5} ${z * 0.5}`);
-            
-            // Calculate rotation to point outward
-            const direction = new THREE.Vector3(x, y, z).normalize();
-            const quaternion = new THREE.Quaternion();
-            const up = new THREE.Vector3(0, 1, 0);
-            quaternion.setFromUnitVectors(up, direction);
-            const euler = new THREE.Euler().setFromQuaternion(quaternion);
-            
-            spikeContainer.setAttribute('rotation', {
-              x: THREE.MathUtils.radToDeg(euler.x),
-              y: THREE.MathUtils.radToDeg(euler.y),
-              z: THREE.MathUtils.radToDeg(euler.z)
-            });
-            
-            this.el.appendChild(spikeContainer);
-          }
-        }
-      });
-
-      // Add interaction component
-      AFRAME.registerComponent('clickable', {
-        init: function() {
-          this.el.addEventListener('click', function() {
-            this.setAttribute('scale', {x: 1.2, y: 1.2, z: 1.2});
-            setTimeout(() => {
-              this.setAttribute('scale', {x: 1, y: 1, z: 1});
-            }, 300);
-          });
-        }
-      });
-    </script>
-  </head>
-  <body>
-    <a-scene embedded arjs='sourceType: webcam; debugUIEnabled: false;' renderer="antialias: true">
-      <!-- Environment -->
-      <a-entity light="type: ambient; intensity: 0.5"></a-entity>
-      <a-entity light="type: directional; intensity: 0.8; position: -1 1 1"></a-entity>
-
-      <!-- Marker-based AR -->
-      <a-marker preset="hiro">
-        <a-entity
-          id="virus-model"
-          position="0 0.5 0"
-          scale="1 1 1"
-          virus-core
-          clickable
-          animation="property: rotation; to: 0 360 0; loop: true; dur: 30000; easing: linear">
-        </a-entity>
-      </a-marker>
-
-      <!-- Camera -->
       <a-entity camera></a-entity>
     </a-scene>
   </body>
 </html>
-+
