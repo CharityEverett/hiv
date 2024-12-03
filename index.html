@@ -14,15 +14,28 @@
   init: function() {
     const core = document.createElement('a-sphere');
     core.setAttribute('radius', '0.5');
-    core.setAttribute('material', {
-      roughness: 0.1,
-      metalness: 0.2,
-      opacity: 0.6,
-      transparent: true,
-      shader: 'standard',
-      emissive: '#2A1B3D',
-      emissiveIntensity: 0.7
-    });
+   core.setAttribute('material', {
+  color: '#4B0082',
+  roughness: 0.1,
+  metalness: 0.2,
+  opacity: 0.6,
+  transparent: true,
+  shader: 'standard',
+  emissive: '#2A1B3D',
+  emissiveIntensity: 0.7,
+  normalScale: new THREE.Vector2(1, 1),
+  displacementScale: 0.2,
+  displacementBias: 0.1,
+  sphericalEnvMap: true
+});
+
+// Add noise texture for displacement
+core.setAttribute('geometry', {
+  primitive: 'sphere',
+  radius: 0.5,
+  segmentsWidth: 64,
+  segmentsHeight: 64
+});
     this.el.appendChild(core);
 
     const numSpikes = 60;
