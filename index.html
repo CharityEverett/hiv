@@ -124,13 +124,13 @@
         z: index * segmentAngle
       });
       
-      const label = document.createElement('a-text');
-      const labelAngle = index * segmentAngle;
-      const labelX = radius * Math.cos(labelAngle * Math.PI / 180);
-      const labelZ = radius * Math.sin(labelAngle * Math.PI / 180);
-      
-      label.setAttribute('value', `${data.year}: ${data.event}`);
-      label.setAttribute('position', `${labelX} 0.2 ${labelZ}`);
+     const label = document.createElement('a-text');
+label.setAttribute('width', 4); // Increase from 2
+label.setAttribute('value', `${data.year}\n${data.event}`); // Add line break
+label.setAttribute('position', `${labelX * 1.2} 0 ${labelZ * 1.2}`); // Move further out
+label.setAttribute('scale', '1.5 1.5 1.5'); // Make text larger
+label.setAttribute('baseline', 'top');
+label.setAttribute('anchor', 'left');
       label.setAttribute('look-at', '0 0 0');
       label.setAttribute('width', 2);
       label.setAttribute('align', 'center');
@@ -139,6 +139,17 @@
       segment.appendChild(arc);
       segment.appendChild(label);
       this.el.appendChild(segment);
+
+      const yearLabel = document.createElement('a-text');
+yearLabel.setAttribute('value', data.year);
+yearLabel.setAttribute('color', '#00FFFF');
+yearLabel.setAttribute('width', 2);
+yearLabel.setAttribute('scale', '2 2 2'); // Larger year numbers
+
+const eventLabel = document.createElement('a-text');
+eventLabel.setAttribute('value', data.event);
+eventLabel.setAttribute('color', '#FFFFFF');
+eventLabel.setAttribute('width', 3);
     });
   }
 });
