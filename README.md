@@ -1,6 +1,6 @@
 # Harvard HIV Research WebXR Data Visualization
 
-(assets/screenshot.png)
+![Harvard Institution HIV Data Visualization](https://github.com/CharityEverett/hiv/blob/75ed2e0963e6750ab361d8ebef4162e0401542d4/assets/screenshot.png)
 
 An interactive WebXR visualization exploring Harvard's groundbreaking HIV research collaborations across multiple institutions. This project visualizes how Harvard's research centers worked together to reshape modern medicine through HIV research as shown in the recent Harvard Gazette article. [Find the published article here](https://news.harvard.edu/gazette/story/2024/11/how-hiv-research-has-reshaped-modern-medicine/).
 
@@ -9,6 +9,7 @@ An interactive WebXR visualization exploring Harvard's groundbreaking HIV resear
 This visualization features:
 - Interactive 3D model of an HIV virus with dynamic spikes and glowing elements
 - Circular timeline showing Harvard's key research institutions
+- Click on any of the timeline panels to see information on the contributions and researchers
 - Color-coded segments representing different research centers
 - Particle effects creating a microscopic atmosphere
 - 3D extruded text elements providing institutional information
