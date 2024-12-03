@@ -160,7 +160,7 @@ const labelAngle = index * segmentAngle;
 const labelX = radius * Math.cos(labelAngle * Math.PI / 180);
 const labelZ = radius * Math.sin(labelAngle * Math.PI / 180);
 
-label.setAttribute('value', `${data.year}\n${data.event}`); // Add line break between year and event
+label.setAttribute('value', `${data.institution}\n${data.people}`); // Add line break between year and event
 label.setAttribute('position', `${labelX * 1.2} 0.5 ${labelZ * 1.2}`); // Move text slightly outward
 label.setAttribute('scale', '2 2 2'); // Make text larger
 label.setAttribute('align', 'center');
@@ -244,10 +244,15 @@ label.setAttribute('side', 'double'); // Ensure text is visible from both sides
       building.geometry.forEach(shape => {
         const element = document.createElement('a-entity');
         const geometryAttrs = {};
+        buildingContainer.appendChild(element);
+    });
+
+         document.querySelector('#visualization-container').appendChild(buildingContainer);
+});
         
         // Set geometry attributes
         Object.keys(shape).forEach(key => {
-          if (key !== 'position') {
+          if (key !== 'position' && key !== 'type') {
             geometryAttrs[key] = shape[key];
           }
         });
