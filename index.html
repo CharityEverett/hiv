@@ -177,7 +177,7 @@ label.setAttribute('side', 'double'); // Ensure text is visible from both sides
   }
 });
 
-      AFRAME.registerComponent('institution-buildings', {
+     AFRAME.registerComponent('institution-buildings', {
   init: function() {
     const buildingData = [
       {
@@ -233,7 +233,7 @@ label.setAttribute('side', 'double'); // Ensure text is visible from both sides
 
     buildingData.forEach((building, index) => {
       const angle = (index * (360 / buildingData.length)) * (Math.PI / 180);
-      const radius = 3; // Match timeline radius
+      const radius = 3;
       const x = radius * Math.cos(angle);
       const z = radius * Math.sin(angle);
       
@@ -243,14 +243,10 @@ label.setAttribute('side', 'double'); // Ensure text is visible from both sides
       
       building.geometry.forEach(shape => {
         const element = document.createElement('a-entity');
-        const geometryAttrs = {};
-        buildingContainer.appendChild(element);
-    });
-
-         document.querySelector('#visualization-container').appendChild(buildingContainer);
-});
+        const geometryAttrs = {
+          primitive: shape.type
+        };
         
-        // Set geometry attributes
         Object.keys(shape).forEach(key => {
           if (key !== 'position' && key !== 'type') {
             geometryAttrs[key] = shape[key];
@@ -271,7 +267,7 @@ label.setAttribute('side', 'double'); // Ensure text is visible from both sides
         
         buildingContainer.appendChild(element);
       });
-
+      
       this.el.appendChild(buildingContainer);
     });
   }
