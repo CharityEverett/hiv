@@ -113,31 +113,28 @@
     timelineData.forEach((data, index) => {
       const segment = document.createElement('a-entity');
       
-      // Create arc segment
       const arc = document.createElement('a-torus');
       arc.setAttribute('radius', radius);
       arc.setAttribute('radius-tubular', '0.15');
       arc.setAttribute('arc', segmentAngle);
       arc.setAttribute('color', data.color);
       arc.setAttribute('rotation', {
-        x: 0,
-        y: index * segmentAngle,
-        z: 0
+        x: 90,
+        y: 0,
+        z: index * segmentAngle
       });
       
-      // Create text label with proper positioning
+      const label = document.createElement('a-text');
       const labelAngle = index * segmentAngle;
       const labelX = radius * Math.cos(labelAngle * Math.PI / 180);
       const labelZ = radius * Math.sin(labelAngle * Math.PI / 180);
       
-      const label = document.createElement('a-text');
-      label.setAttribute('value', `${data.year}\n${data.event}`);
-      label.setAttribute('position', `${labelX * 1.2} 0.5 ${labelZ * 1.2}`);
-      label.setAttribute('scale', '1.5 1.5 1.5');
+      label.setAttribute('value', `${data.year}: ${data.event}`);
+      label.setAttribute('position', `${labelX} 0.2 ${labelZ}`);
+      label.setAttribute('look-at', '0 0 0');
+      label.setAttribute('width', 2);
       label.setAttribute('align', 'center');
       label.setAttribute('color', '#00FFFF');
-      label.setAttribute('look-at', '0 1.6 0');
-      label.setAttribute('width', '4');
 
       segment.appendChild(arc);
       segment.appendChild(label);
@@ -201,28 +198,28 @@ this.el.appendChild(detail);    });
       <a-entity light="type: ambient; intensity: 0.5"></a-entity>
       <a-entity light="type: directional; intensity: 0.8; position: -1 1 1"></a-entity>
 
-  <a-entity
+      <a-entity
   id="visualization-container"
-  position="0 1.6 -4">
-  
-  <!-- Virus Model -->
-  <a-entity
-    id="virus-model"
-    position="0 0 0"
-    scale="2 2 2"
-    virus-core
-    clickable
-    animation="property: rotation; to: 0 360 0; loop: true; dur: 30000; easing: linear">
-  </a-entity>
-  
+  position="0 4.835 -2"
+  rotation="-80 0 0">
+      <!-- Virus Model -->
+      <a-entity
+        id="virus-model"
+        position="0 2 -3"
+        scale="3 3 3"
+        virus-core
+        clickable
+        animation="property: rotation; to: 0 360 0; loop: true; dur: 30000; easing: linear">
+      </a-entity>
+      
   <!-- Timeline -->
-  <a-entity
-    id="timeline"
-    position="0 0 0"
-    research-timeline
-    animation="property: rotation; to: 0 360 0; loop: true; dur: 30000; easing: linear">
-  </a-entity>
+ <a-entity
+  id="timeline"
+  position="0 2 -3"
+  research-timeline
+     animation="property: rotation; to: 0 360 0; loop: true; dur: 30000; easing: linear">
 </a-entity>
+    </a-entity>
 
       <!-- Camera -->
       <a-entity position="0 0 0">
