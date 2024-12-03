@@ -1,5 +1,7 @@
 # Harvard HIV Research WebXR Data Visualization
 
+(assets/screenshot.png)
+
 An interactive WebXR visualization exploring Harvard's groundbreaking HIV research collaborations across multiple institutions. This project visualizes how Harvard's research centers worked together to reshape modern medicine through HIV research as shown in the recent Harvard Gazette article. [Find the published article here](https://news.harvard.edu/gazette/story/2024/11/how-hiv-research-has-reshaped-modern-medicine/).
 
 ## Overview
