@@ -3,8 +3,7 @@
   <head>
     <title>Harvard HIV Research WebXR Data Visualization</title>
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-    <script src="js/aframe-text-geometry-component.min.js"></script
-    <script src="https://unpkg.com/aframe-troika-text/dist/aframe-troika-text.min.js"></script>
+    <script src="js/aframe-text-geometry-component.min.js"></script>
     <style>
       body {
         margin: 0;
@@ -96,27 +95,45 @@ AFRAME.registerComponent('research-timeline', {
     const timelineData = [
       {
         institution: "Stephen Harrison's Lab- Laboratory of Structural Biology",
+        people: "LOREM IPSUM",
         color: "#00FFFF",
+        impact: "LOREM IPSUM"
       },
       {
         institution: "Dana Farber Cancer Center",
+        people: "LOREM IPSUM",
         color: "#4169E1",
+        impact: "LOREM IPSUM"
       },
       {
         institution: "Boston Children's Hospital",
+        people: "LOREM IPSUM",
         color: "#9370DB",
+        impact: "LOREM IPSUM"
+      },
+      {
+        institution: "Brigham and Women's Hospital",
+        people: "LOREM IPSUM",
+        color: "#7B68EE",
+        impact: "LOREM IPSUM"
       },
       {
         institution: "Ragon Institute of Mass General, MIT, and Harvard",
+        people: "LOREM IPSUM",
         color: "#4B0082",
+        impact: "LOREM IPSUM"
       },
       {
         institution: "Beth Israel Deaconess Medical Center",
+        people: "LOREM IPSUM",
         color: "#40E0D0",
+        impact: "LOREM IPSUM"
       },
       {
         institution: "Mass General",
+        people: "LOREM IPSUM",
         color: "#8A7BB8",
+        impact: "LOREM IPSUM"
       }
     ];
 
@@ -138,32 +155,123 @@ AFRAME.registerComponent('research-timeline', {
         z: index * segmentAngle
       });
       
-      const label = document.createElement('a-entity');
+      const label = document.createElement('a-text');
       const labelAngle = index * segmentAngle;
       const labelX = radius * Math.cos(labelAngle * Math.PI / 180);
       const labelZ = radius * Math.sin(labelAngle * Math.PI / 180);
-label.setAttribute('troika-text', {
-  value: `${data.institution}\n${data.people}`,
-  color: '#00FFFF',
-  fontSize: 0.3,
-  align: 'center',
-  anchor: 'bottom',
-  maxWidth: 2,
-  extrude: 0.05 
-});
- // Position and camera-facing attributes
-label.setAttribute('position', `${labelX * 1.2} 0.5 ${labelZ * 1.2}`);
-label.setAttribute('look-at', '[camera]');
+      
+      label.setAttribute('value', `${data.institution}\n${data.people}`);
+      label.setAttribute('position', `${labelX * 1.2} 0.5 ${labelZ * 1.2}`);
+      label.setAttribute('scale', '2 2 2');
+      label.setAttribute('align', 'center');
+      label.setAttribute('baseline', 'center');
+      label.setAttribute('color', '#00FFFF');
+      label.setAttribute('width', '6');
+      label.setAttribute('look-at', '[camera]');
+      label.setAttribute('side', 'double');
 
-// Material properties for glow effect
-label.setAttribute('material', {
-  metalness: 0.3,
-  roughness: 0.3,
-  emissive: '#00FFFF',
-  emissiveIntensity: 0.5     
-  
+      segment.appendChild(arc);
+      segment.appendChild(label);
+      this.el.appendChild(segment);
+    });
+  }
 });
-     AFRAME.registerComponent('timeline-segment', {
+    AFRAME.registerComponent('institution-buildings', {
+  init: function() {
+    const buildingData = [
+      {
+        name: "Stephen Harrison's Lab",
+        geometry: [
+          {type: 'box', width: 0.4, height: 1.0, depth: 0.4},
+          {type: 'cylinder', radius: 0.2, height: 0.3, position: '0 0.65 0'}
+        ]
+      },
+      {
+        name: "Dana Farber Cancer Center",
+        geometry: [
+          {type: 'box', width: 0.8, height: 2.0, depth: 0.5},
+          {type: 'cone', radius: 0.4, height: 0.5, position: '0 1.25 0'}
+        ]
+      },
+      {
+        name: "Boston Children's Hospital",
+        geometry: [
+          {type: 'box', width: 0.6, height: 1.5, depth: 0.4},
+          {type: 'box', width: 0.4, height: 0.4, depth: 0.4, position: '0 0.95 0'}
+        ]
+      },
+      {
+        name: "Brigham and Women's Hospital",
+        geometry: [
+          {type: 'box', width: 0.7, height: 1.8, depth: 0.4},
+          {type: 'box', width: 0.5, height: 0.3, depth: 0.4, position: '0 1.05 0'}
+        ]
+      },
+      {
+        name: "Ragon Institute",
+        geometry: [
+          {type: 'box', width: 0.9, height: 1.6, depth: 0.5},
+          {type: 'cylinder', radius: 0.3, height: 0.4, position: '0 1.0 0'}
+        ]
+      },
+      {
+        name: "Beth Israel Deaconess",
+        geometry: [
+          {type: 'box', width: 0.6, height: 1.4, depth: 0.4},
+          {type: 'box', width: 0.4, height: 0.5, depth: 0.4, position: '0 0.95 0'}
+        ]
+      },
+      {
+        name: "Mass General",
+        geometry: [
+          {type: 'box', width: 0.7, height: 1.7, depth: 0.4},
+          {type: 'cone', radius: 0.35, height: 0.4, position: '0 1.05 0'}
+        ]
+      }
+    ];
+
+    buildingData.forEach((building, index) => {
+      const angle = (index * (360 / buildingData.length)) * (Math.PI / 180);
+      const radius = 3;
+      const x = radius * Math.cos(angle);
+      const z = radius * Math.sin(angle);
+      
+      const buildingContainer = document.createElement('a-entity');
+      buildingContainer.setAttribute('position', `${x} 0 ${z}`);
+      buildingContainer.setAttribute('rotation', `0 ${-angle * (180/Math.PI)} 0`);
+      
+      building.geometry.forEach(shape => {
+        const element = document.createElement('a-entity');
+        const geometryAttrs = {
+          primitive: shape.type
+        };
+        
+        Object.keys(shape).forEach(key => {
+          if (key !== 'position' && key !== 'type') {
+            geometryAttrs[key] = shape[key];
+          }
+        });
+        
+        element.setAttribute('geometry', geometryAttrs);
+        element.setAttribute('material', {
+          color: '#000033',
+          opacity: 0.9,
+          metalness: 0,
+          roughness: 1
+        });
+        
+        if(shape.position) {
+          element.setAttribute('position', shape.position);
+        }
+        
+        buildingContainer.appendChild(element);
+      });
+      
+      this.el.appendChild(buildingContainer);
+    });
+  }
+});
+      AFRAME.registerComponent('timeline-segment', {
   init: function() {
     this.el.addEventListener('click', function() {
       // Show detailed information
