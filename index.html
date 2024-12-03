@@ -3,6 +3,7 @@
   <head>
     <title>Harvard HIV Research WebXR Data Visualization</title>
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="js/aframe-text-geometry-component.min.js"></script>
     <style>
       body {
         margin: 0;
@@ -89,7 +90,7 @@ core.setAttribute('geometry', {
   }
 });
 
- AFRAME.registerComponent('research-timeline', {
+AFRAME.registerComponent('research-timeline', {
   init: function() {
     const timelineData = [
       {
@@ -122,21 +123,20 @@ core.setAttribute('geometry', {
         color: "#4B0082",
         impact: "LOREM IPSUM"
       },
-
       {
-       institution:  "Beth Israel Deaconess Medical Center",
+        institution: "Beth Israel Deaconess Medical Center",
         people: "LOREM IPSUM",
         color: "#40E0D0",
         impact: "LOREM IPSUM"
       },
-
-    {
+      {
         institution: "Mass General",
         people: "LOREM IPSUM",
         color: "#8A7BB8",
         impact: "LOREM IPSUM"
       }
     ];
+
     const radius = 3;
     const segmentCount = timelineData.length;
     const segmentAngle = 360 / segmentCount;
@@ -155,20 +155,20 @@ core.setAttribute('geometry', {
         z: index * segmentAngle
       });
       
-     const label = document.createElement('a-text');
-const labelAngle = index * segmentAngle;
-const labelX = radius * Math.cos(labelAngle * Math.PI / 180);
-const labelZ = radius * Math.sin(labelAngle * Math.PI / 180);
-
-label.setAttribute('value', `${data.institution}\n${data.people}`); // Add line break between year and event
-label.setAttribute('position', `${labelX * 1.2} 0.5 ${labelZ * 1.2}`); // Move text slightly outward
-label.setAttribute('scale', '2 2 2'); // Make text larger
-label.setAttribute('align', 'center');
-label.setAttribute('baseline', 'center');
-label.setAttribute('color', '#00FFFF');
-label.setAttribute('width', '6'); // Increase width for better readability
-label.setAttribute('look-at', '[camera]'); // Make text always face camera
-label.setAttribute('side', 'double'); // Ensure text is visible from both sides
+      const label = document.createElement('a-text');
+      const labelAngle = index * segmentAngle;
+      const labelX = radius * Math.cos(labelAngle * Math.PI / 180);
+      const labelZ = radius * Math.sin(labelAngle * Math.PI / 180);
+      
+      label.setAttribute('value', `${data.institution}\n${data.people}`);
+      label.setAttribute('position', `${labelX * 1.2} 0.5 ${labelZ * 1.2}`);
+      label.setAttribute('scale', '2 2 2');
+      label.setAttribute('align', 'center');
+      label.setAttribute('baseline', 'center');
+      label.setAttribute('color', '#00FFFF');
+      label.setAttribute('width', '6');
+      label.setAttribute('look-at', '[camera]');
+      label.setAttribute('side', 'double');
 
       segment.appendChild(arc);
       segment.appendChild(label);
@@ -176,7 +176,6 @@ label.setAttribute('side', 'double'); // Ensure text is visible from both sides
     });
   }
 });
-
     AFRAME.registerComponent('institution-buildings', {
   init: function() {
     const buildingData = [
@@ -320,6 +319,9 @@ this.el.appendChild(detail);    });
   </head>
   <body>
   <a-scene bloom="radius: 0.66; intensity: 1.0; threshold: 0.7">
+    <a-assets>
+  <a-asset-item id="customFont" src="fonts/helvetiker_regular.typeface.json"></a-asset-item>
+</a-assets>
   <a-sky color="#000033"></a-sky>
   
   <a-entity
