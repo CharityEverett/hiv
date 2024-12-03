@@ -177,6 +177,90 @@ label.setAttribute('side', 'double'); // Ensure text is visible from both sides
   }
 });
 
+      AFRAME.registerComponent('institution-buildings', {
+  init: function() {
+    const buildingData = [
+      {
+        name: "Stephen Harrison's Lab",
+        geometry: [
+          {primitive: 'box', width: 0.4, height: 1.0, depth: 0.4},
+          {primitive: 'cylinder', radius: 0.2, height: 0.3, position: '0 0.65 0'}
+        ]
+      },
+      {
+        name: "Dana Farber Cancer Center",
+        geometry: [
+          {primitive: 'box', width: 0.8, height: 2.0, depth: 0.5},
+          {primitive: 'cone', radius: 0.4, height: 0.5, position: '0 1.25 0'}
+        ]
+      },
+      {
+        name: "Boston Children's Hospital",
+        geometry: [
+          {primitive: 'box', width: 0.6, height: 1.5, depth: 0.4},
+          {primitive: 'box', width: 0.4, height: 0.4, depth: 0.4, position: '0 0.95 0'}
+        ]
+      },
+      {
+        name: "Brigham and Women's Hospital",
+        geometry: [
+          {primitive: 'box', width: 0.7, height: 1.8, depth: 0.4},
+          {primitive: 'box', width: 0.5, height: 0.3, depth: 0.4, position: '0 1.05 0'}
+        ]
+      },
+      {
+        name: "Ragon Institute",
+        geometry: [
+          {primitive: 'box', width: 0.9, height: 1.6, depth: 0.5},
+          {primitive: 'cylinder', radius: 0.3, height: 0.4, position: '0 1.0 0'}
+        ]
+      },
+      {
+        name: "Beth Israel Deaconess",
+        geometry: [
+          {primitive: 'box', width: 0.6, height: 1.4, depth: 0.4},
+          {primitive: 'box', width: 0.4, height: 0.5, depth: 0.4, position: '0 0.95 0'}
+        ]
+      },
+      {
+        name: "Mass General",
+        geometry: [
+          {primitive: 'box', width: 0.7, height: 1.7, depth: 0.4},
+          {primitive: 'cone', radius: 0.35, height: 0.4, position: '0 1.05 0'}
+        ]
+      }
+    ];
+
+    buildingData.forEach((building, index) => {
+      const angle = (index * (360 / buildingData.length)) * (Math.PI / 180);
+      const radius = 3; // Match timeline radius
+      const x = radius * Math.cos(angle);
+      const z = radius * Math.sin(angle);
+      
+      const buildingContainer = document.createElement('a-entity');
+      buildingContainer.setAttribute('position', `${x} 0 ${z}`);
+      buildingContainer.setAttribute('rotation', `0 ${-angle * (180/Math.PI)} 0`);
+      
+      building.geometry.forEach(shape => {
+        const element = document.createElement('a-entity');
+        element.setAttribute('geometry', shape);
+        element.setAttribute('material', {
+          color: '#000033',
+          opacity: 0.9,
+          metalness: 0,
+          roughness: 1
+        });
+        if(shape.position) {
+          element.setAttribute('position', shape.position);
+        }
+        buildingContainer.appendChild(element);
+      });
+
+      this.el.appendChild(buildingContainer);
+    });
+  }
+});
+
       AFRAME.registerComponent('timeline-segment', {
   init: function() {
     this.el.addEventListener('click', function() {
