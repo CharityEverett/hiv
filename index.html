@@ -124,17 +124,20 @@
         z: index * segmentAngle
       });
       
-      const label = document.createElement('a-text');
-      const labelAngle = index * segmentAngle;
-      const labelX = radius * Math.cos(labelAngle * Math.PI / 180);
-      const labelZ = radius * Math.sin(labelAngle * Math.PI / 180);
-      
-      label.setAttribute('value', `${data.year}: ${data.event}`);
-      label.setAttribute('position', `${labelX} 0.2 ${labelZ}`);
-      label.setAttribute('look-at', '0 0 0');
-      label.setAttribute('width', 2);
-      label.setAttribute('align', 'center');
-      label.setAttribute('color', '#00FFFF');
+     const label = document.createElement('a-text');
+const labelAngle = index * segmentAngle;
+const labelX = radius * Math.cos(labelAngle * Math.PI / 180);
+const labelZ = radius * Math.sin(labelAngle * Math.PI / 180);
+
+label.setAttribute('value', `${data.year}\n${data.event}`); // Add line break between year and event
+label.setAttribute('position', `${labelX * 1.2} 0.5 ${labelZ * 1.2}`); // Move text slightly outward
+label.setAttribute('scale', '2 2 2'); // Make text larger
+label.setAttribute('align', 'center');
+label.setAttribute('baseline', 'center');
+label.setAttribute('color', '#00FFFF');
+label.setAttribute('width', '6'); // Increase width for better readability
+label.setAttribute('look-at', '[camera]'); // Make text always face camera
+label.setAttribute('side', 'double'); // Ensure text is visible from both sides
 
       segment.appendChild(arc);
       segment.appendChild(label);
