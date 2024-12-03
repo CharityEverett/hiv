@@ -2,6 +2,8 @@
 
 ![Harvard Institution HIV Data Visualization](https://github.com/CharityEverett/hiv/blob/75ed2e0963e6750ab361d8ebef4162e0401542d4/assets/screenshot.png)
 
+[View the visualization here](https://charityeverett.github.io/hiv/)
+
 An interactive WebXR visualization exploring Harvard's groundbreaking HIV research collaborations across multiple institutions. This project visualizes how Harvard's research centers worked together to reshape modern medicine through HIV research as shown in the recent Harvard Gazette article. [Find the published article here](https://news.harvard.edu/gazette/story/2024/11/how-hiv-research-has-reshaped-modern-medicine/).
 
 ## Overview
