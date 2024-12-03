@@ -243,16 +243,27 @@ label.setAttribute('side', 'double'); // Ensure text is visible from both sides
       
       building.geometry.forEach(shape => {
         const element = document.createElement('a-entity');
-        element.setAttribute('geometry', shape);
+        const geometryAttrs = {};
+        
+        // Set geometry attributes
+        Object.keys(shape).forEach(key => {
+          if (key !== 'position') {
+            geometryAttrs[key] = shape[key];
+          }
+        });
+        
+        element.setAttribute('geometry', geometryAttrs);
         element.setAttribute('material', {
           color: '#000033',
           opacity: 0.9,
           metalness: 0,
           roughness: 1
         });
+        
         if(shape.position) {
           element.setAttribute('position', shape.position);
         }
+        
         buildingContainer.appendChild(element);
       });
 
