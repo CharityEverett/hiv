@@ -3,7 +3,8 @@
   <head>
     <title>Harvard HIV Research WebXR Data Visualization</title>
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-<script src="https://unpkg.com/aframe-text-geometry-component@0.5.1/dist/aframe-text-geometry-component.min.js"></script>  <script src="https://cdn.jsdelivr.net/npm/three.regular.helvetiker@1.0.0/index.js"></script>
+    <script src="https://unpkg.com/aframe-text-geometry-component@0.5.1/dist/aframe-text-geometry-component.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three.regular.helvetiker@1.0.0/index.js"></script>
     <script src="https://unpkg.com/aframe-troika-text/dist/aframe-troika-text.min.js"></script>
     <style>
       body {
@@ -12,245 +13,212 @@
       }
     </style>
     <script>
-    AFRAME.registerComponent('virus-core', {
-  init: function() {
-    const core = document.createElement('a-sphere');
-    core.setAttribute('radius', '0.5');
-   core.setAttribute('material', {
-  color: '#4B0082',
-  roughness: 0.1,
-  metalness: 0.2,
-  opacity: 0.6,
-  transparent: true,
-  shader: 'standard',
-  emissive: '#2A1B3D',
-  emissiveIntensity: 0.7,
-  normalScale: new THREE.Vector2(1, 1),
-  displacementScale: 0.2,
-  displacementBias: 0.1,
-  sphericalEnvMap: true
-});
+      AFRAME.registerComponent('virus-core', {
+        init: function() {
+          const core = document.createElement('a-sphere');
+          core.setAttribute('radius', '0.5');
+          core.setAttribute('material', {
+            color: '#4B0082',
+            roughness: 0.1,
+            metalness: 0.2,
+            opacity: 0.6,
+            transparent: true,
+            shader: 'standard',
+            emissive: '#2A1B3D',
+            emissiveIntensity: 0.7,
+            normalScale: new THREE.Vector2(1, 1),
+            displacementScale: 0.2,
+            displacementBias: 0.1,
+            sphericalEnvMap: true
+          });
 
-// Add noise texture for displacement
-core.setAttribute('geometry', {
-  primitive: 'sphere',
-  radius: 0.5,
-  segmentsWidth: 64,
-  segmentsHeight: 64
-});
-    this.el.appendChild(core);
+          core.setAttribute('geometry', {
+            primitive: 'sphere',
+            radius: 0.5,
+            segmentsWidth: 64,
+            segmentsHeight: 64
+          });
+          this.el.appendChild(core);
 
-    const numSpikes = 60;
-    const phi = Math.PI * (3 - Math.sqrt(5));
+          const numSpikes = 60;
+          const phi = Math.PI * (3 - Math.sqrt(5));
 
-    for (let i = 0; i < numSpikes; i++) {
-      const y = 1 - (i / (numSpikes - 1)) * 2;
-      const radius = Math.sqrt(1 - y * y);
-      const theta = phi * i;
+          for (let i = 0; i < numSpikes; i++) {
+            const y = 1 - (i / (numSpikes - 1)) * 2;
+            const radius = Math.sqrt(1 - y * y);
+            const theta = phi * i;
 
-      const x = Math.cos(theta) * radius;
-      const z = Math.sin(theta) * radius;
+            const x = Math.cos(theta) * radius;
+            const z = Math.sin(theta) * radius;
 
-      const spikeContainer = document.createElement('a-entity');
-      
-      // Create tapered cone instead of cylinder
-      const stem = document.createElement('a-cone');
-      stem.setAttribute('height', '0.6');
-      stem.setAttribute('radius-bottom', '0.015');
-      stem.setAttribute('radius-top', '0.005');
-      stem.setAttribute('color', '#4169E1');
-      stem.setAttribute('opacity', '0.9');
-      
-      // Glowing bulb at the end
-      const bulb = document.createElement('a-sphere');
-      bulb.setAttribute('radius', '0.04');
-      bulb.setAttribute('color', '#00FFFF');
-      bulb.setAttribute('emission', '#00FFFF');
-      bulb.setAttribute('position', '0 0.3 0');
+            const spikeContainer = document.createElement('a-entity');
 
-           
-      spikeContainer.appendChild(stem);
-      spikeContainer.appendChild(bulb);
-      
-      spikeContainer.setAttribute('position', `${x * 0.5} ${y * 0.5} ${z * 0.5}`);
-      
-      const direction = new THREE.Vector3(x, y, z).normalize();
-      const quaternion = new THREE.Quaternion();
-      const up = new THREE.Vector3(0, 1, 0);
-      quaternion.setFromUnitVectors(up, direction);
-      const euler = new THREE.Euler().setFromQuaternion(quaternion);
-      
-      spikeContainer.setAttribute('rotation', {
-        x: THREE.MathUtils.radToDeg(euler.x),
-        y: THREE.MathUtils.radToDeg(euler.y),
-        z: THREE.MathUtils.radToDeg(euler.z)
+            const stem = document.createElement('a-cone');
+            stem.setAttribute('height', '0.6');
+            stem.setAttribute('radius-bottom', '0.015');
+            stem.setAttribute('radius-top', '0.005');
+            stem.setAttribute('color', '#4169E1');
+            stem.setAttribute('opacity', '0.9');
+
+            const bulb = document.createElement('a-sphere');
+            bulb.setAttribute('radius', '0.04');
+            bulb.setAttribute('color', '#00FFFF');
+            bulb.setAttribute('emission', '#00FFFF');
+            bulb.setAttribute('position', '0 0.3 0');
+
+            spikeContainer.appendChild(stem);
+            spikeContainer.appendChild(bulb);
+
+            spikeContainer.setAttribute('position', `${x * 0.5} ${y * 0.5} ${z * 0.5}`);
+
+            const direction = new THREE.Vector3(x, y, z).normalize();
+            const quaternion = new THREE.Quaternion();
+            const up = new THREE.Vector3(0, 1, 0);
+            quaternion.setFromUnitVectors(up, direction);
+            const euler = new THREE.Euler().setFromQuaternion(quaternion);
+
+            spikeContainer.setAttribute('rotation', {
+              x: THREE.MathUtils.radToDeg(euler.x),
+              y: THREE.MathUtils.radToDeg(euler.y),
+              z: THREE.MathUtils.radToDeg(euler.z)
+            });
+
+            this.el.appendChild(spikeContainer);
+          }
+        }
       });
-      
-      this.el.appendChild(spikeContainer);
-    }
-  }
-});
 
-AFRAME.registerComponent('research-timeline', {
-  init: function() {
-    const timelineData = [
-      {
-        institution: "Stephen Harrison's Lab- Laboratory of Structural Biology",
-        color: "#00FFFF",
-      },
-      {
-        institution: "Dana Farber Cancer Center",
-        color: "#4169E1",
-      },
-      {
-        institution: "Boston Children's Hospital",
-        color: "#9370DB",
-      },
-      {
-        institution: "Ragon Institute of Mass General, MIT, and Harvard",
-        color: "#4B0082",
-      },
-      {
-        institution: "Beth Israel Deaconess Medical Center",
-        color: "#40E0D0",
-      },
-      {
-        institution: "Mass General",
-        color: "#8A7BB8",
-      }
-    ];
+      AFRAME.registerComponent('research-timeline', {
+        init: function() {
+          const timelineData = [
+            { institution: "Stephen Harrison's Lab- Laboratory of Structural Biology", color: "#00FFFF" },
+            { institution: "Dana Farber Cancer Center", color: "#4169E1" },
+            { institution: "Boston Children's Hospital", color: "#9370DB" },
+            { institution: "Ragon Institute of Mass General, MIT, and Harvard", color: "#4B0082" },
+            { institution: "Beth Israel Deaconess Medical Center", color: "#40E0D0" },
+            { institution: "Mass General", color: "#8A7BB8" }
+          ];
 
-    const radius = 3;
-    const segmentCount = timelineData.length;
-    const segmentAngle = 360 / segmentCount;
+          const radius = 3;
+          const segmentCount = timelineData.length;
+          const segmentAngle = 360 / segmentCount;
 
-    timelineData.forEach((data, index) => {
-      const segment = document.createElement('a-entity');
-      
-      const arc = document.createElement('a-torus');
-      arc.setAttribute('radius', radius);
-      arc.setAttribute('radius-tubular', '0.15');
-      arc.setAttribute('arc', segmentAngle);
-      arc.setAttribute('color', data.color);
-      arc.setAttribute('rotation', {
-        x: 90,
-        y: 0,
-        z: index * segmentAngle
-      });
-      
-      const label = document.createElement('a-entity');
-      const labelAngle = index * segmentAngle;
-      const labelX = radius * Math.cos(labelAngle * Math.PI / 180);
-      const labelZ = radius * Math.sin(labelAngle * Math.PI / 180);
+          timelineData.forEach((data, index) => {
+            const segment = document.createElement('a-entity');
+
+            const arc = document.createElement('a-torus');
+            arc.setAttribute('radius', radius);
+            arc.setAttribute('radius-tubular', '0.15');
+            arc.setAttribute('arc', segmentAngle);
+            arc.setAttribute('color', data.color);
+            arc.setAttribute('rotation', { x: 90, y: 0, z: index * segmentAngle });
+
+            const label = document.createElement('a-entity');
+            
 label.setAttribute('troika-text', {
-  value: `${data.institution}\n${data.people}`,
-  color: '#00FFFF',
-  fontSize: 0.3,
-  align: 'center',
-  anchor: 'bottom',
-  maxWidth: 2,
-  extrude: 0.05 
+              value: `${data.institution}`,
+              color: '#00FFFF',
+              fontSize: 0.3,
+              align: 'center',
+              anchor: 'bottom',
+              maxWidth: 2,
+              extrude: 0.05 
 });
- // Position and camera-facing attributes
+
+const labelAngle = index * segmentAngle;
+const labelX = radius * Math.cos(labelAngle * Math.PI / 180);
+const labelZ = radius * Math.sin(labelAngle * Math.PI / 180);
+
 label.setAttribute('position', `${labelX * 1.2} 0.5 ${labelZ * 1.2}`);
 label.setAttribute('look-at', '[camera]');
 
-// Material properties for glow effect
 label.setAttribute('material', {
-  metalness: 0.3,
-  roughness: 0.3,
-  emissive: '#00FFFF',
-  emissiveIntensity: 0.5     
-  
-});
-     AFRAME.registerComponent('timeline-segment', {
-  init: function() {
-    this.el.addEventListener('click', function() {
-      // Show detailed information
-     const detail = document.createElement('a-plane');
-detail.setAttribute('position', '0 0 -1');
-detail.setAttribute('width', '2');
-detail.setAttribute('height', '1');
-detail.setAttribute('color', '#000033');
-detail.setAttribute('opacity', '0.9');
-// Add impact text
-const impact = document.createElement('a-text');
-impact.setAttribute('value', data.impact);
-impact.setAttribute('position', '-0.9 -0.2 0.01');
-impact.setAttribute('color', '#00BFFF');
-impact.setAttribute('width', '1.8');
-impact.setAttribute('wrap-count', '40');
-
-// Add close button
-const closeButton = document.createElement('a-text');
-closeButton.setAttribute('value', 'X');
-closeButton.setAttribute('position', '0.9 0.4 0.01');
-closeButton.setAttribute('color', 'red');
-closeButton.addEventListener('click', function() {
-  detail.parentNode.removeChild(detail);
+              metalness: 0.3,
+              roughness: 0.3,
+              emissive: '#00FFFF',
+              emissiveIntensity: 0.5     
 });
 
-detail.appendChild(impact);
-detail.appendChild(closeButton);
-this.el.appendChild(detail);    });
-  }
+segment.appendChild(arc);
+segment.appendChild(label);
+this.el.appendChild(segment);
+
+AFRAME.registerComponent('timeline-segment', {
+              init: function() {
+                this.el.addEventListener('click', function() {
+                  const detail = document.createElement('a-plane');
+                  detail.setAttribute('position', '0 0 -1');
+                  detail.setAttribute('width', '2');
+                  detail.setAttribute('height', '1');
+                  detail.setAttribute('color', '#000033');
+                  detail.setAttribute('opacity', '0.9');
+
+                  const impact = document.createElement('a-text');
+                  impact.setAttribute('value', data.institution);
+                  impact.setAttribute('position', '-0.9 -0.2 0.01');
+                  impact.setAttribute('color', '#00BFFF');
+                  impact.setAttribute('width', '1.8');
+                  impact.setAttribute('wrap-count', '40');
+
+                  const closeButton = document.createElement('a-text');
+                  closeButton.setAttribute('value', 'X');
+                  closeButton.setAttribute('position', '0.9 0.4 0.01');
+                  closeButton.setAttribute('color', 'red');
+                  closeButton.addEventListener('click', function() {
+                    detail.parentNode.removeChild(detail);
+                  });
+
+                  detail.appendChild(impact);
+                  detail.appendChild(closeButton);
+                  this.el.appendChild(detail);    
+                });
+              }
 });
-      AFRAME.registerComponent('clickable', {
-        init: function() {
-          this.el.addEventListener('click', function() {
-            this.setAttribute('scale', {x: 1.2, y: 1.2, z: 1.2});
-            setTimeout(() => {
-              this.setAttribute('scale', {x: 1, y: 1, z: 1});
-            }, 300);
           });
         }
       });
+
+      AFRAME.registerComponent('clickable', {
+        init: function() {
+          this.el.addEventListener('click', function() {
+             this.setAttribute('scale', {x: 1.2, y: 1.2, z: 1.2});
+             setTimeout(() => {
+               this.setAttribute('scale', {x: 1, y: 1, z: 1});
+             }, 300);
+           });
+         }
+       });
     </script>
-  </head>
-  <body>
-  <a-scene bloom="radius: 0.66; intensity: 1.0; threshold: 0.7">
-    <a-assets>
-      <a-asset-item id="optimerBoldFont" src="https://rawgit.com/mrdoob/three.js/dev/examples/fonts/optimer_bold.typeface.json"></a-asset-item>
-  </a-assets>
-    
-  <a-sky color="#000033"></a-sky>
-  
-  <a-entity
-    particle-system="preset: dust; particleCount: 2000; color: #4B0082, #00FFFF; size: 0.2; opacity: 0.3; blending: additive">
-  </a-entity>
-      
-      <!-- Environment -->
-      <a-entity light="type: ambient; intensity: 0.5"></a-entity>
-      <a-entity light="type: directional; intensity: 0.8; position: -1 1 1"></a-entity>
+ </head>
+ <body>
+   <a-scene bloom="radius: 0.66; intensity: 1.0; threshold: 0.7">
+     <a-assets>
+       <a-asset-item id="optimerBoldFont" src="https://rawgit.com/mrdoob/three.js/dev/examples/fonts/optimer_bold.typeface.json"></a-asset-item>
+     </a-assets>
 
-      <a-entity
-  id="visualization-container"
-  position="0 4.835 -2"
-  rotation="-80 0 0">
-      <!-- Virus Model -->
-      <a-entity
-        id="virus-model"
-        position="0 2 -3"
-        scale="3 3 3"
-        virus-core
-        clickable
-        animation="property: rotation; to: 0 360 0; loop: true; dur: 30000; easing: linear">
-      </a-entity>
-      
-  <!-- Timeline -->
- <a-entity
-  id="timeline"
-  position="0 2 -3"
-  scale="1 3 1"
-  research-timeline
-     animation="property: rotation; to: 0 360 0; loop: true; dur: 30000; easing: linear">
-</a-entity>
-    </a-entity>
+     <a-sky color="#000033"></a-sky>
 
-      <!-- Camera -->
-      <a-entity position="0 0 0">
-        <a-camera look-controls wasd-controls></a-camera>
-      </a-entity>
-    </a-scene>
-  </body>
+     <a-entity particle-system="preset: dust; particleCount=2000; color=#4B0082,#00FFFF; size=0.2; opacity=0.3; blending=additive">
+     </a-entity>
+
+     <!-- Environment -->
+     <a-entity light="type=ambient; intensity=0.5"></a-entity>
+     <a-entity light="type=directional; intensity=0.8; position=-1,1,1"></a-entity>
+
+     <a-entity id="visualization-container" position="0,4,-2" rotation="-80,0,">
+       <!-- Virus Model -->
+       <a-entity id="virus-model" position="02,-3" scale="3,3,3" virus-core clickable animation="property=rotation; to=03600; loop=true; dur=30000; easing=linear">
+       </a-entity>
+
+       <!-- Timeline -->
+       <a-entity id="timeline" position="02,-3" scale="13,13" research-timeline animation="property=rotation; to=03600; loop=true; dur=30000; easing=linear">
+       </a-entity>
+     </a-entity>
+
+     <!-- Camera -->
+     <a-entity position="000">
+       <a-camera look-controls wasd-controls></a-camera>
+     </a-entity>
+   </a-scene>
+ </body>
 </html>
