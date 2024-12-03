@@ -10,15 +10,19 @@
       }
     </style>
     <script>
-     AFRAME.registerComponent('virus-core', {
+    AFRAME.registerComponent('virus-core', {
   init: function() {
-    // Create core sphere with purple/blue glow
     const core = document.createElement('a-sphere');
     core.setAttribute('radius', '0.5');
-    core.setAttribute('color', '#4B0082');
-    core.setAttribute('roughness', '0.3');
-    core.setAttribute('metalness', '0.7');
-    core.setAttribute('emission', '#2A1B3D');
+    core.setAttribute('material', {
+      roughness: 0.2,
+      metalness: 0.8,
+      opacity: 0.7,
+      transparent: true,
+      shader: 'standard',
+      emissive: '#4B0082',
+      emissiveIntensity: 0.5
+    });
     this.el.appendChild(core);
 
     const numSpikes = 60;
@@ -48,7 +52,8 @@
       bulb.setAttribute('color', '#00FFFF');
       bulb.setAttribute('emission', '#00FFFF');
       bulb.setAttribute('position', '0 0.3 0');
-      
+
+           
       spikeContainer.appendChild(stem);
       spikeContainer.appendChild(bulb);
       
@@ -193,9 +198,12 @@ this.el.appendChild(detail);    });
     </script>
   </head>
   <body>
-    <a-scene>
-<a-sky color="#000033"></a-sky>
-
+  <a-scene bloom="radius: 0.66; intensity: 1.0; threshold: 0.7">
+  <a-sky color="#000033"></a-sky>
+  
+  <a-entity
+    particle-system="preset: dust; particleCount: 2000; color: #4B0082, #00FFFF; size: 0.2; opacity: 0.3; blending: additive">
+  </a-entity>
       
       <!-- Environment -->
       <a-entity light="type: ambient; intensity: 0.5"></a-entity>
