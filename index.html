@@ -120,33 +120,40 @@ AFRAME.registerComponent('research-timeline', {
       const labelAngle = (index * segmentAngle + segmentAngle/2) * (Math.PI / 180);
       const labelX = radius * Math.cos(labelAngle);
       const labelZ = radius * Math.sin(labelAngle);
-
-  // Create text model entity
 const textModel = document.createElement('a-entity');
-textModel.setAttribute('gltf-model', `#${data.institution.toLowerCase().replace(/\s+/g, '-')}`);
-textModel.setAttribute('position', `${labelX} 0 ${labelZ}`);
-textModel.setAttribute('rotation', `0 ${-labelAngle * (180/Math.PI) + 90} 0`);
-textModel.setAttribute('scale', '2 1.5 0');  // Increased scale
-textModel.setAttribute('material', {
-    color: data.color,
-    metalness: 0.3,
-    roughness: 0.7,
-    emissive: data.color,
-    emissiveIntensity: 0.2
-});
+const modelId = data.institution
+    .toLowerCase()
+    .replace(/[']/g, '')  // Remove apostrophes
+    .replace(/\s+/g, '-'); // Replace spaces with hyphens
 
-// Adjust Y position to center in timeline ring
+textModel.setAttribute('gltf-model', `#${modelId}`);
 textModel.setAttribute('position', {
     x: labelX,
-    y: 0.5,  // Raised to middle of ring
+    y: 0.5,
     z: labelZ
 });
+textModel.setAttribute('rotation', {
+    x: 0,
+    y: -labelAngle * (180/Math.PI) + 90,
+    z: 0
+});
+textModel.setAttribute('scale', '2 1.5 0');
 
-      segment.appendChild(arc);
-      segment.appendChild(textModel);
-      this.el.appendChild(segment);
-    });
-  }
+// Add model-loaded event listener
+textModel.addEventListener('model-loaded', function() {
+    // Apply material after model is loaded
+    const mesh = textModel.getObject3D('mesh');
+    if (mesh) {
+        mesh.traverse((node) => {
+            if (node.isMesh) {
+                node.material.color.set(data.color);
+                node.material.emissive.set(data.color);
+                node.material.emissiveIntensity = 0.2;
+                node.material.metalness = 0.3;
+                node.material.roughness = 0.7;
+            }
+        });
+    }
 });
     AFRAME.registerComponent('institution-buildings', {
   init: function() {
