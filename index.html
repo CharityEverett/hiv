@@ -92,13 +92,13 @@ core.setAttribute('geometry', {
 AFRAME.registerComponent('research-timeline', {
   init: function() {
     const timelineData = [
-      { institution: "Stephen Harrison's Lab", color: "#00FFFF" },
-      { institution: "Dana Farber Cancer Center", color: "#4169E1" },
-      { institution: "Boston Children's Hospital", color: "#9370DB" },
-      { institution: "Brigham and Women's Hospital", color: "#7B68EE" },
-      { institution: "Ragon Institute", color: "#4B0082" },
-      { institution: "Beth Israel Deaconess", color: "#40E0D0" },
-      { institution: "Mass General", color: "#8A7BB8" }
+      { color: "#00FFFF" },
+      { color: "#4169E1" },
+      { color: "#9370DB" },
+      { color: "#7B68EE" },
+      { color: "#4B0082" },
+      { color: "#40E0D0" },
+      { color: "#8A7BB8" }
     ];
 
     const radius = 3;
@@ -106,54 +106,15 @@ AFRAME.registerComponent('research-timeline', {
     const segmentAngle = 360 / segmentCount;
 
     timelineData.forEach((data, index) => {
-      const segment = document.createElement('a-entity');
-      
-      // Create timeline arc
       const arc = document.createElement('a-torus');
       arc.setAttribute('radius', radius);
       arc.setAttribute('radius-tubular', '0.15');
       arc.setAttribute('arc', segmentAngle);
       arc.setAttribute('color', data.color);
-      arc.setAttribute('rotation', { x: 90, y: 0, z: index * segmentAngle });
-
-      // Calculate position for text model
-      const labelAngle = (index * segmentAngle + segmentAngle/2) * (Math.PI / 180);
-      const labelX = radius * Math.cos(labelAngle);
-      const labelZ = radius * Math.sin(labelAngle);
-const textModel = document.createElement('a-entity');
-const modelId = data.institution
-    .toLowerCase()
-    .replace(/[']/g, '')  // Remove apostrophes
-    .replace(/\s+/g, '-'); // Replace spaces with hyphens
-
-textModel.setAttribute('gltf-model', `#${modelId}`);
-textModel.setAttribute('position', {
-    x: labelX,
-    y: 0.5,
-    z: labelZ
-});
-textModel.setAttribute('rotation', {
-    x: 0,
-    y: -labelAngle * (180/Math.PI) + 90,
-    z: 0
-});
-textModel.setAttribute('scale', '2 1.5 0');
-
-// Add model-loaded event listener
-textModel.addEventListener('model-loaded', function() {
-    // Apply material after model is loaded
-    const mesh = textModel.getObject3D('mesh');
-    if (mesh) {
-        mesh.traverse((node) => {
-            if (node.isMesh) {
-                node.material.color.set(data.color);
-                node.material.emissive.set(data.color);
-                node.material.emissiveIntensity = 0.2;
-                node.material.metalness = 0.3;
-                node.material.roughness = 0.7;
-            }
-        });
-    }
+      arc.setAttribute('rotation', `90 0 ${index * segmentAngle}`);
+      this.el.appendChild(arc);
+    });
+  }
 });
     AFRAME.registerComponent('institution-buildings', {
   init: function() {
@@ -337,6 +298,55 @@ this.el.appendChild(detail);    });
   research-timeline
      animation="property: rotation; to: 0 360 0; loop: true; dur: 30000; easing: linear">
 </a-entity>
+      <!-- Static model placements around the timeline -->
+<a-entity gltf-model="#stephen-harrisons-lab" 
+    position="3 2.5 0" 
+    rotation="0 90 0" 
+    scale="2 1.5 0"
+    material="color: #00FFFF">
+</a-entity>
+
+<a-entity gltf-model="#dana-farber-cancer-center" 
+    position="2.12 2.5 2.12" 
+    rotation="0 45 0" 
+    scale="2 1.5 0"
+    material="color: #4169E1">
+</a-entity>
+
+<a-entity gltf-model="#boston-childrens-hospital" 
+    position="0 2.5 3" 
+    rotation="0 0 0" 
+    scale="2 1.5 0"
+    material="color: #9370DB">
+</a-entity>
+
+<a-entity gltf-model="#brigham-and-womens-hospital" 
+    position="-2.12 2.5 2.12" 
+    rotation="0 -45 0" 
+    scale="2 1.5 0"
+    material="color: #7B68EE">
+</a-entity>
+
+<a-entity gltf-model="#ragon-institute" 
+    position="-3 2.5 0" 
+    rotation="0 -90 0" 
+    scale="2 1.5 0"
+    material="color: #4B0082">
+</a-entity>
+
+<a-entity gltf-model="#beth-israel-deaconess" 
+    position="-2.12 2.5 -2.12" 
+    rotation="0 -135 0" 
+    scale="2 1.5 0"
+    material="color: #40E0D0">
+</a-entity>
+
+<a-entity gltf-model="#mass-general" 
+    position="0 2.5 -3" 
+    rotation="0 180 0" 
+    scale="2 1.5 0"
+    material="color: #8A7BB8">
+</a-entity>  
     </a-entity>
 
       <!-- Camera -->
