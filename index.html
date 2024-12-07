@@ -1,350 +1,292 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <title>Harvard HIV Research WebXR Data Visualization</title>
-    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
     <style>
-      body {
-        margin: 0;
-        overflow: hidden;
-      }
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
     </style>
     <script>
-    AFRAME.registerComponent('virus-core', {
-  init: function() {
-    const core = document.createElement('a-sphere');
-    core.setAttribute('radius', '0.5');
-   core.setAttribute('material', {
-  color: '#4B0082',
-  roughness: 0.1,
-  metalness: 0.2,
-  opacity: 0.6,
-  transparent: true,
-  shader: 'standard',
-  emissive: '#2A1B3D',
-  emissiveIntensity: 0.7,
-  normalScale: new THREE.Vector2(1, 1),
-  displacementScale: 0.2,
-  displacementBias: 0.1,
-  sphericalEnvMap: true
-});
-
-// Add noise texture for displacement
-core.setAttribute('geometry', {
-  primitive: 'sphere',
-  radius: 0.5,
-  segmentsWidth: 64,
-  segmentsHeight: 64
-});
-    this.el.appendChild(core);
-
-    const numSpikes = 60;
-    const phi = Math.PI * (3 - Math.sqrt(5));
-
-    for (let i = 0; i < numSpikes; i++) {
-      const y = 1 - (i / (numSpikes - 1)) * 2;
-      const radius = Math.sqrt(1 - y * y);
-      const theta = phi * i;
-
-      const x = Math.cos(theta) * radius;
-      const z = Math.sin(theta) * radius;
-
-      const spikeContainer = document.createElement('a-entity');
-      
-      // Create tapered cone instead of cylinder
-      const stem = document.createElement('a-cone');
-      stem.setAttribute('height', '0.6');
-      stem.setAttribute('radius-bottom', '0.015');
-      stem.setAttribute('radius-top', '0.005');
-      stem.setAttribute('color', '#4169E1');
-      stem.setAttribute('opacity', '0.9');
-      
-      // Glowing bulb at the end
-      const bulb = document.createElement('a-sphere');
-      bulb.setAttribute('radius', '0.04');
-      bulb.setAttribute('color', '#00FFFF');
-      bulb.setAttribute('emission', '#00FFFF');
-      bulb.setAttribute('position', '0 0.3 0');
-
-           
-      spikeContainer.appendChild(stem);
-      spikeContainer.appendChild(bulb);
-      
-      spikeContainer.setAttribute('position', `${x * 0.5} ${y * 0.5} ${z * 0.5}`);
-      
-      const direction = new THREE.Vector3(x, y, z).normalize();
-      const quaternion = new THREE.Quaternion();
-      const up = new THREE.Vector3(0, 1, 0);
-      quaternion.setFromUnitVectors(up, direction);
-      const euler = new THREE.Euler().setFromQuaternion(quaternion);
-      
-      spikeContainer.setAttribute('rotation', {
-        x: THREE.MathUtils.radToDeg(euler.x),
-        y: THREE.MathUtils.radToDeg(euler.y),
-        z: THREE.MathUtils.radToDeg(euler.z)
-      });
-      
-      this.el.appendChild(spikeContainer);
-    }
-  }
-});
-
-AFRAME.registerComponent('research-timeline', {
-  init: function() {
-    const timelineData = [
-      {
-        institution: "Stephen Harrison's Lab- Laboratory of Structural Biology",
-        color: "#00FFFF",
-           },
-      {
-        institution: "Dana Farber Cancer Center",
-        color: "#4169E1",
-         },
-      {
-        institution: "Boston Children's Hospital",
-        color: "#9370DB",
-      },
-      {
-        institution: "Brigham and Women's Hospital",
-        color: "#7B68EE",
-             },
-      {
-        institution: "Ragon Institute of Mass General, MIT, and Harvard",
-        color: "#4B0082",
-      },
-      {
-        institution: "Beth Israel Deaconess Medical Center",
-        color: "#40E0D0",
-      },
-      {
-        institution: "Mass General",
-            color: "#8A7BB8",
-      }
-    ];
-
-   const radius = 3;
-const segmentCount = timelineData.length;
-const segmentAngle = 360 / segmentCount;
-
-timelineData.forEach((data, index) => {
-    const segment = document.createElement('a-entity');
-    
-    const arc = document.createElement('a-torus');
-    arc.setAttribute('radius', radius);
-    arc.setAttribute('radius-tubular', '0.15');
-    arc.setAttribute('arc', segmentAngle);
-    arc.setAttribute('color', data.color);
-    arc.setAttribute('rotation', `90 0 ${index * segmentAngle}`);
-    
-    const building = document.createElement('a-entity');
-    const labelAngle = index * segmentAngle;
-    const labelX = radius * Math.cos(labelAngle * Math.PI / 180);
-    const labelZ = radius * Math.sin(labelAngle * Math.PI / 180);
-    
-    building.setAttribute('gltf-model', `#${modelMap[data.institution]}`);
-    building.setAttribute('position', `${labelX} 0.5 ${labelZ}`);
-    building.setAttribute('rotation', `0 ${-labelAngle + 90} 0`);
-    building.setAttribute('scale', '2 1.5 0');
-    building.setAttribute('material', {
-        color: data.color,
-        metalness: 0.3,
-        roughness: 0.7,
-        emissive: data.color,
-        emissiveIntensity: 0.2
-    });
-    
-    segment.appendChild(arc);
-    segment.appendChild(building);
-    this.el.appendChild(segment);
-});
-    AFRAME.registerComponent('institution-buildings', {
-  init: function() {
-    const buildingData = [
-      {
-        name: "Stephen Harrison's Lab",
-        geometry: [
-          {type: 'box', width: 0.4, height: 1.0, depth: 0.4},
-          {type: 'cylinder', radius: 0.2, height: 0.3, position: '0 0.65 0'}
-        ]
-      },
-      {
-        name: "Dana Farber Cancer Center",
-        geometry: [
-          {type: 'box', width: 0.8, height: 2.0, depth: 0.5},
-          {type: 'cone', radius: 0.4, height: 0.5, position: '0 1.25 0'}
-        ]
-      },
-      {
-        name: "Boston Children's Hospital",
-        geometry: [
-          {type: 'box', width: 0.6, height: 1.5, depth: 0.4},
-          {type: 'box', width: 0.4, height: 0.4, depth: 0.4, position: '0 0.95 0'}
-        ]
-      },
-      {
-        name: "Brigham and Women's Hospital",
-        geometry: [
-          {type: 'box', width: 0.7, height: 1.8, depth: 0.4},
-          {type: 'box', width: 0.5, height: 0.3, depth: 0.4, position: '0 1.05 0'}
-        ]
-      },
-      {
-        name: "Ragon Institute",
-        geometry: [
-          {type: 'box', width: 0.9, height: 1.6, depth: 0.5},
-          {type: 'cylinder', radius: 0.3, height: 0.4, position: '0 1.0 0'}
-        ]
-      },
-      {
-        name: "Beth Israel Deaconess",
-        geometry: [
-          {type: 'box', width: 0.6, height: 1.4, depth: 0.4},
-          {type: 'box', width: 0.4, height: 0.5, depth: 0.4, position: '0 0.95 0'}
-        ]
-      },
-      {
-        name: "Mass General",
-        geometry: [
-          {type: 'box', width: 0.7, height: 1.7, depth: 0.4},
-          {type: 'cone', radius: 0.35, height: 0.4, position: '0 1.05 0'}
-        ]
-      }
-    ];
-
-    buildingData.forEach((building, index) => {
-      const angle = (index * (360 / buildingData.length)) * (Math.PI / 180);
-      const radius = 3;
-      const x = radius * Math.cos(angle);
-      const z = radius * Math.sin(angle);
-      
-      const buildingContainer = document.createElement('a-entity');
-      buildingContainer.setAttribute('position', `${x} 0 ${z}`);
-      buildingContainer.setAttribute('rotation', `0 ${-angle * (180/Math.PI)} 0`);
-      
-      building.geometry.forEach(shape => {
-        const element = document.createElement('a-entity');
-        const geometryAttrs = {
-          primitive: shape.type
+        const modelMap = {
+            "Stephen Harrison's Lab": "stephen-harrisons-lab",
+            "Dana Farber Cancer Center": "dana-farber-cancer-center",
+            "Boston Children's Hospital": "boston-childrens",
+            "Brigham and Women's Hospital": "brigham-and-womens-hospital",
+            "Ragon Institute of Mass General, MIT, and Harvard": "ragon-institute",
+            "Beth Israel Deaconess Medical Center": "beth-israel-deaconess",
+            "Mass General": "mass-general"
         };
-        
-        Object.keys(shape).forEach(key => {
-          if (key !== 'position' && key !== 'type') {
-            geometryAttrs[key] = shape[key];
-          }
-        });
-        
-        element.setAttribute('geometry', geometryAttrs);
-        element.setAttribute('material', {
-          color: '#000033',
-          opacity: 0.9,
-          metalness: 0,
-          roughness: 1
-        });
-        
-        if(shape.position) {
-          element.setAttribute('position', shape.position);
-        }
-        
-        buildingContainer.appendChild(element);
-      });
-      
-      this.el.appendChild(buildingContainer);
-    });
-  }
-});
-      AFRAME.registerComponent('timeline-segment', {
-  init: function() {
-    this.el.addEventListener('click', function() {
-      // Show detailed information
-     const detail = document.createElement('a-plane');
-detail.setAttribute('position', '0 0 -1');
-detail.setAttribute('width', '2');
-detail.setAttribute('height', '1');
-detail.setAttribute('color', '#000033');
-detail.setAttribute('opacity', '0.9');
-// Add impact text
-const impact = document.createElement('a-text');
-impact.setAttribute('value', data.impact);
-impact.setAttribute('position', '-0.9 -0.2 0.01');
-impact.setAttribute('color', '#00BFFF');
-impact.setAttribute('width', '1.8');
-impact.setAttribute('wrap-count', '40');
 
-// Add close button
-const closeButton = document.createElement('a-text');
-closeButton.setAttribute('value', 'X');
-closeButton.setAttribute('position', '0.9 0.4 0.01');
-closeButton.setAttribute('color', 'red');
-closeButton.addEventListener('click', function() {
-  detail.parentNode.removeChild(detail);
-});
+        AFRAME.registerComponent('virus-core', {
+            init: function() {
+                const core = document.createElement('a-sphere');
+                core.setAttribute('radius', '0.5');
+                core.setAttribute('material', {
+                    color: '#4B0082',
+                    roughness: 0.1,
+                    metalness: 0.2,
+                    opacity: 0.6,
+                    transparent: true,
+                    shader: 'standard',
+                    emissive: '#2A1B3D',
+                    emissiveIntensity: 0.7,
+                    normalScale: new THREE.Vector2(1, 1),
+                    displacementScale: 0.2,
+                    displacementBias: 0.1,
+                    sphericalEnvMap: true
+                });
 
-detail.appendChild(impact);
-detail.appendChild(closeButton);
-this.el.appendChild(detail);    });
-  }
-});
-      AFRAME.registerComponent('clickable', {
-        init: function() {
-          this.el.addEventListener('click', function() {
-            this.setAttribute('scale', {x: 1.2, y: 1.2, z: 1.2});
-            setTimeout(() => {
-              this.setAttribute('scale', {x: 1, y: 1, z: 1});
-            }, 300);
-          });
-        }
-      });
+                // Add noise texture for displacement
+                core.setAttribute('geometry', {
+                    primitive: 'sphere',
+                    radius: 0.5,
+                    segmentsWidth: 64,
+                    segmentsHeight: 64
+                });
+                this.el.appendChild(core);
+
+                const numSpikes = 60;
+                const phi = Math.PI * (3 - Math.sqrt(5));
+                for (let i = 0; i < numSpikes; i++) {
+                    const y = 1 - (i / (numSpikes - 1)) * 2;
+                    const radius = Math.sqrt(1 - y * y);
+                    const theta = phi * i;
+                    const x = Math.cos(theta) * radius;
+                    const z = Math.sin(theta) * radius;
+
+                    const spikeContainer = document.createElement('a-entity');
+
+                    // Create tapered cone instead of cylinder
+                    const stem = document.createElement('a-cone');
+                    stem.setAttribute('height', '0.6');
+                    stem.setAttribute('radius-bottom', '0.015');
+                    stem.setAttribute('radius-top', '0.005');
+                    stem.setAttribute('color', '#4169E1');
+                    stem.setAttribute('opacity', '0.9');
+
+                    // Glowing bulb at the end
+                    const bulb = document.createElement('a-sphere');
+                    bulb.setAttribute('radius', '0.04');
+                    bulb.setAttribute('color', '#00FFFF');
+                    bulb.setAttribute('emissive', '#00FFFF'); // Fixed to emissive
+                    bulb.setAttribute('position', '0 0.3 0');
+
+                    spikeContainer.appendChild(stem);
+                    spikeContainer.appendChild(bulb);
+                    spikeContainer.setAttribute('position', `${x * 0.5} ${y * 0.5} ${z * 0.5}`);
+
+                    const direction = new THREE.Vector3(x, y, z).normalize();
+                    const quaternion = new THREE.Quaternion();
+                    const up = new THREE.Vector3(0, 1, 0);
+                    quaternion.setFromUnitVectors(up, direction);
+                    const euler = new THREE.Euler().setFromQuaternion(quaternion);
+                    
+                    spikeContainer.setAttribute('rotation', {
+                        x: THREE.MathUtils.radToDeg(euler.x),
+                        y: THREE.MathUtils.radToDeg(euler.y),
+                        z: THREE.MathUtils.radToDeg(euler.z)
+                    });
+                    
+                    this.el.appendChild(spikeContainer);
+                }
+            }
+        });
+
+        AFRAME.registerComponent('research-timeline', {
+            init: function() {
+                const timelineData = [
+                    { institution: "Stephen Harrison's Lab", color: "#00FFFF" },
+                    { institution: "Dana Farber Cancer Center", color: "#4169E1" },
+                    { institution: "Boston Children's Hospital", color: "#9370DB" },
+                    { institution: "Brigham and Women's Hospital", color: "#7B68EE" },
+                    { institution: "Ragon Institute of Mass General, MIT, and Harvard", color: "#4B0082" },
+                    { institution: "Beth Israel Deaconess Medical Center", color: "#40E0D0" },
+                    { institution: "Mass General", color: "#8A7BB8" }
+                ];
+
+                const radius = 3;
+                const segmentCount = timelineData.length;
+                const segmentAngle = 360 / segmentCount;
+
+                timelineData.forEach((data, index) => {
+                    const segment = document.createElement('a-entity');
+                    
+                    const arc = document.createElement('a-torus');
+                    arc.setAttribute('radius', radius);
+                    arc.setAttribute('radius-tubular', '0.15');
+                    arc.setAttribute('arc', segmentAngle);
+                    arc.setAttribute('color', data.color);
+                    
+                    arc.setAttribute('rotation', `90 0 ${index * segmentAngle}`);
+                    
+                    const building = document.createElement('a-entity');
+                    
+                    const labelAngle = index * segmentAngle;
+                    
+                    const labelX = radius * Math.cos(labelAngle * Math.PI / 180);
+                    
+                    const labelZ = radius * Math.sin(labelAngle * Math.PI / 180);
+                    
+                    building.setAttribute('gltf-model', `#${modelMap[data.institution]}`);
+                    
+                    building.setAttribute('position', `${labelX} 0.5 ${labelZ}`);
+                    
+                    building.setAttribute('rotation', `0 ${-labelAngle + 90} 0`);
+                    
+                    building.setAttribute('scale', '2 1.5 0');
+                    
+                   building.setAttribute('material', {
+                       color: data.color,
+                       metalness: 0.3,
+                       roughness: 0.7,
+                       emissive: data.color,
+                       emissiveIntensity: 0.2
+                   });
+
+                   segment.appendChild(arc);
+                   segment.appendChild(building);
+                   this.el.appendChild(segment);
+               });
+           }
+        });
+
+        AFRAME.registerComponent('institution-buildings', {
+            init: function() {
+                const buildingData = [
+                   { name: "Stephen Harrison's Lab", geometry: [ { type: 'box', width: 0.4, height: 1.0, depth: 0.4 }, { type: 'cylinder', radius: 0.2, height: 0.3, position: '0 0.65 0' } ] },
+                   { name: "Dana Farber Cancer Center", geometry: [ { type: 'box', width: 0.8, height: 2.0, depth: 0.5 }, { type: 'cone', radius: 0.4, height: 0.5, position: '0 1.25 0' } ] },
+                   { name: "Boston Children's Hospital", geometry:[ { type:'box', width:.6,height:.5,depth:.4 },{type:'box',width:.4,height:.4,depth:.4,position:'0 .95 .4'} ]},
+                   { name:"Brigham and Women's Hospital", geometry:[{type:'box',width:.7,height:.8,depth:.4},{type:'box',width:.5,height:.3,depth:.4,position:'0 .05 .4'}]},
+                   { name:"Ragon Institute", geometry:[{type:'box',width:.9,height:.6,depth:.5},{type:'cylinder',radius:.3,height:.4,position:'0 .1 .4'}]},
+                   { name:"Beth Israel Deaconess", geometry:[{type:'box',width:.6,height:.4,depth:.4},{type:'box',width:.4,height:.5,depth:.4,position:'0 .95 .4'}]},
+                   { name:"Mass General", geometry:[{type:'box',width:.7,height:.7,depth:.4},{type:'cone',radius:.35,height:.4,position:'0 .05 .4'}]}
+               ];
+
+               buildingData.forEach((building, index) => {
+                   const angle = (index * (360 / buildingData.length)) * (Math.PI / 180);
+                   const radius = 3;
+                   const x = radius * Math.cos(angle);
+                   const z = radius * Math.sin(angle);
+
+                   const buildingContainer = document.createElement('a-entity');
+                   buildingContainer.setAttribute('position', `${x} 0 ${z}`);
+                   buildingContainer.setAttribute('rotation', `0 ${-angle * (180/Math.PI)} 0`);
+
+                   building.geometry.forEach(shape => {
+                       const element = document.createElement('a-entity');
+                       const geometryAttrs = { primitive : shape.type };
+                       Object.keys(shape).forEach(key => {
+                           if (key !== 'position' && key !== 'type') {
+                               geometryAttrs[key] = shape[key];
+                           }
+                       });
+                       element.setAttribute('geometry', geometryAttrs);
+                       element.setAttribute('material',{
+                           color:'#000033',
+                           opacity : .9,
+                           metalness : .2,
+                           roughness : .7
+                       });
+                       if(shape.position) {
+                           element.setAttribute('position',shape.position);
+                       }
+                       buildingContainer.appendChild(element);
+                   });
+                   this.el.appendChild(buildingContainer);
+               });
+           }
+        });
+
+        AFRAME.registerComponent('timeline-segment', {
+            init:function() {
+                this.el.addEventListener("click", function() {
+                     // Show detailed information
+                     const detail= document.createElement("a-plane");
+                     detail.setAttribute("position","0 -1 -1");
+                     detail.setAttribute("width","2");
+                     detail.setAttribute("height","1");
+                     detail.setAttribute("color","#000033");
+                     detail.setAttribute("opacity","1");
+
+                     // Add impact text
+                     const impact= document.createElement("a-text");
+                     impact.setAttribute("value","Impact Information"); // Placeholder text
+                     impact.setAttribute("position","-1 -1 -1");
+                     impact.setAttribute("color","#00BFFF");
+                     impact.setAttribute("wrap-count","40");
+
+                     // Add close button
+                     const closeButton= document.createElement("a-text");
+                     closeButton.setAttribute("value","X");
+                     closeButton.setAttribute("position","-.9 .5 -.01");
+                     closeButton.addEventListener("click",function() {
+                         detail.parentNode.removeChild(detail);
+                     });
+
+                     detail.appendChild(impact);
+                     detail.appendChild(closeButton);
+                     this.el.appendChild(detail);
+                 });
+             }
+         });
+
+         AFRAME.registerComponent('clickable',{
+             init:function() {
+                 this.el.addEventListener("click",function() {
+                      this.setAttribute("scale",{x :1.2,y :1.2,z :1.2});
+                      setTimeout(() => {
+                          this.setAttribute("scale",{x :1,y :1,z :1});
+                      },300)
+                 })
+             }
+         });
     </script>
-  </head>
-  <body>
-  <a-scene bloom="radius: 0.66; intensity: 1.0; threshold: 0.7">
-<a-assets>
-<a-asset-item id="boston-childrens" src="assets/Institutions/BostonChildrensHospital.glb"></a-asset-item>
-<a-asset-item id="beth-israel-deaconess" src="assets/Institutions/beth_israel.glb"></a-asset-item>
-<a-asset-item id="brigham-and-womens-hospital" src="assets/Institutions/brigham_womens.glb"></a-asset-item>
-<a-asset-item id="dana-farber-cancer-center" src="assets/Institutions/dana_farber.glb"></a-asset-item>
-<a-asset-item id="mass-general" src="assets/Institutions/mass_general.glb"></a-asset-item>
-<a-asset-item id="ragon-institute" src="assets/Institutions/ragon_institute.glb"></a-asset-item>
-<a-asset-item id="stephen-harrisons-lab" src="assets/Institutions/stephen_harrisons.glb"></a-asset-item>
-</a-assets>
-  <a-sky color="#000033"></a-sky>
-  
-  <a-entity
-    particle-system="preset: dust; particleCount: 2000; color: #4B0082, #00FFFF; size: 0.2; opacity: 0.3; blending: additive">
-  </a-entity>
-      
-      <!-- Environment -->
-      <a-entity light="type: ambient; intensity: 0.5"></a-entity>
-      <a-entity light="type: directional; intensity: 0.8; position: -1 1 1"></a-entity>
+</head>
+<body>
+    <a-scene bloom="radius : .66; intensity : .8; threshold : .7">
+        <a-assets>
+            <a-asset-item id="boston-childrens" src="assets/Institutions/BostonChildrensHospital.glb"></a-asset-item>
+            <a-asset-item id="beth-israel-deaconess" src="assets/Institutions/beth_israel.glb"></a-asset-item>
+            <a-asset-item id="brigham-and-womens-hospital" src="assets/Institutions/brigham_womens.glb"></a-asset-item>
+            <a-asset-item id="dana-farber-cancer-center" src="assets/Institutions/dana_farber.glb"></a-asset-item>
+            <a-asset-item id="mass-general" src="assets/Institutions/mass_general.glb"></a-asset-item>
+            <a-asset-item id="ragon-institute" src="assets/Institutions/ragon_institute.glb"></a-asset-item>
+            <a-asset-item id="stephen-harrisons-lab" src="assets/Institutions/stephen_harrisons.glb"></a-asset-item>
+        </a-assets>
 
-      <a-entity
-  id="visualization-container"
-  position="0 4.835 -2"
-  rotation="-80 0 0">
-      <!-- Virus Model -->
-      <a-entity
-        id="virus-model"
-        position="0 2 -3"
-        scale="3 3 3"
-        virus-core
-        clickable
-        animation="property: rotation; to: 0 360 0; loop: true; dur: 30000; easing: linear">
-      </a-entity>
-      
-  <!-- Timeline -->
- <a-entity
-  id="timeline"
-  position="0 2 -3"
-  scale="1 3 1"
-  research-timeline
-     animation="property: rotation; to: 0 360 0; loop: true; dur: 30000; easing: linear">
-</a-entity>
-    </a-entity>
+        <a-sky color="#000033"></a-sky>
 
-      <!-- Camera -->
-      <a-entity position="0 0 0">
-        <a-camera look-controls wasd-controls></a-camera>
-      </a-entity>
+        <a-entity particle-system="preset:dust; particleCount :200; color:#4B0082,#00FFFF; size :.2; opacity :.3; blending:additive"> </a-entity>
+
+        <!-- Environment -->
+        <a-entity light="type : ambient; intensity : .5"></a-entity>
+        <a-entity light="type : directional; intensity : .8; position :-1 ,1 ,1"></a-entity>
+
+        <a-entity id="visualization-container" position="0 ,4 , -2">
+            <!-- Virus Model -->
+            <a-entity id="virus-model" position="-.75 ,2 ,-3"
+                      scale=".25,.25,.25"
+                      virus-core
+                      clickable
+                      animation="property : rotation; to : '360 ,360 ,360'; loop:true; dur :30000; easing : linear">
+            </a-entity>
+
+            <!-- Timeline -->
+            <a-entity id="timeline" position="-3 ,2 ,-3"
+                      scale=".25,.25,.25"
+                      research-timeline
+                      animation="property : rotation; to :'360 ,360 ,360'; loop:true; dur :30000; easing : linear">
+            </a-entity>
+        </a-entity>
+
+        <!-- Camera -->
+        <a-entity position="-.75 ,-.75 ,-.75">
+            <a-camera look-controls wasd-controls></a-camera>
+        </a-entity>
+
     </a-scene>
-  </body>
+</body>
 </html>
