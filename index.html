@@ -122,43 +122,40 @@ AFRAME.registerComponent('research-timeline', {
       }
     ];
 
-    const radius = 3;
-    const segmentCount = timelineData.length;
-    const segmentAngle = 360 / segmentCount;
+   const radius = 3;
+const segmentCount = timelineData.length;
+const segmentAngle = 360 / segmentCount;
 
-    timelineData.forEach((data, index) => {
-      const segment = document.createElement('a-entity');
-      
-      const arc = document.createElement('a-torus');
-      arc.setAttribute('radius', radius);
-      arc.setAttribute('radius-tubular', '0.15');
-      arc.setAttribute('arc', segmentAngle);
-      arc.setAttribute('color', data.color);
-      arc.setAttribute('rotation', {
-        x: 90,
-        y: 0,
-        z: index * segmentAngle
-      });
-      
-      const building = document.createElement('a-entity');
-      const labelAngle = index * segmentAngle;
-      const labelX = radius * Math.cos(labelAngle * Math.PI / 180);
-      const labelZ = radius * Math.sin(labelAngle * Math.PI / 180);
-      
-    // Use modelMap to get correct model ID for each institution
-building.setAttribute('gltf-model', `#${modelMap[data.institution]}`);
-building.setAttribute('position', `${labelX} 0.5 ${labelZ}`);
-building.setAttribute('rotation', `0 ${-labelAngle + 90} 0`);
-building.setAttribute('scale', '2 1.5 0');
-building.setAttribute('material', {
-    color: data.color,
-    metalness: 0.3,
-    roughness: 0.7,
-    emissive: data.color,
-    emissiveIntensity: 0.2)
-
-});
-  }
+timelineData.forEach((data, index) => {
+    const segment = document.createElement('a-entity');
+    
+    const arc = document.createElement('a-torus');
+    arc.setAttribute('radius', radius);
+    arc.setAttribute('radius-tubular', '0.15');
+    arc.setAttribute('arc', segmentAngle);
+    arc.setAttribute('color', data.color);
+    arc.setAttribute('rotation', `90 0 ${index * segmentAngle}`);
+    
+    const building = document.createElement('a-entity');
+    const labelAngle = index * segmentAngle;
+    const labelX = radius * Math.cos(labelAngle * Math.PI / 180);
+    const labelZ = radius * Math.sin(labelAngle * Math.PI / 180);
+    
+    building.setAttribute('gltf-model', `#${modelMap[data.institution]}`);
+    building.setAttribute('position', `${labelX} 0.5 ${labelZ}`);
+    building.setAttribute('rotation', `0 ${-labelAngle + 90} 0`);
+    building.setAttribute('scale', '2 1.5 0');
+    building.setAttribute('material', {
+        color: data.color,
+        metalness: 0.3,
+        roughness: 0.7,
+        emissive: data.color,
+        emissiveIntensity: 0.2
+    });
+    
+    segment.appendChild(arc);
+    segment.appendChild(building);
+    this.el.appendChild(segment);
 });
     AFRAME.registerComponent('institution-buildings', {
   init: function() {
