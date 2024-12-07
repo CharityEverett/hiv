@@ -80,63 +80,6 @@
             }
         });
 
-        AFRAME.registerComponent('research-timeline', {
-            init: function() {
-                const timelineData = [
-                    { institution: "Stephen Harrison's Lab- Laboratory of Structural Biology", color: "#00FFFF" },
-                    { institution: "Dana Farber Cancer Center", color: "#4169E1" },
-                    { institution: "Boston Children's Hospital", color: "#9370DB" },
-                    { institution: "Brigham and Women's Hospital", color: "#7B68EE" },
-                    { institution: "Ragon Institute of Mass General, MIT, and Harvard", color: "#4B0082" },
-                    { institution: "Beth Israel Deaconess Medical Center", color: "#40E0D0" },
-                    { institution: "Mass General", color: "#8A7BB8" }
-                ];
-
-                const modelMap = {
-                    "Stephen Harrison's Lab- Laboratory of Structural Biology": "stephen-harrisons-lab",
-                    "Dana Farber Cancer Center": "dana-farber-cancer-center",
-                    "Boston Children's Hospital": "boston-childrens-hospital",
-                    "Brigham and Women's Hospital": "brigham-and-womens-hospital",
-                    "Ragon Institute of Mass General, MIT, and Harvard": "ragon-institute",
-                    "Beth Israel Deaconess Medical Center": "beth-israel-deaconess",
-                    "Mass General": "mass-general"
-                };
-
-                const radius = 3;
-                const segmentCount = timelineData.length;
-                const segmentAngle = 360 / segmentCount;
-
-                timelineData.forEach((data, index) => {
-                    const segmentContainer = document.createElement('a-entity');
-                    segmentContainer.setAttribute('rotation', `0 ${index * segmentAngle} 0`);
-                    
-                    const arc = document.createElement('a-torus');
-                    arc.setAttribute('radius', radius);
-                    arc.setAttribute('radius-tubular', '0.15');
-                    arc.setAttribute('arc', segmentAngle);
-                    arc.setAttribute('color', data.color);
-                    arc.setAttribute('rotation', '90 0 0');
-
-                    const building = document.createElement('a-entity');
-                    building.setAttribute('gltf-model', `#${modelMap[data.institution]}`);
-                    building.setAttribute('position', `${radius} 0.5 0`);
-                    building.setAttribute('rotation', '0 90 0');
-                    building.setAttribute('scale', '2 1.5 0');
-                    building.setAttribute('material', {
-                        color: data.color,
-                        metalness: 0.3,
-                        roughness: 0.7,
-                        emissive: data.color,
-                        emissiveIntensity: 0.2
-                    });
-
-                    segmentContainer.appendChild(arc);
-                    segmentContainer.appendChild(building);
-                    this.el.appendChild(segmentContainer);
-                });
-            }
-        });
-
         AFRAME.registerComponent('clickable', {
             init: function() {
                 this.el.addEventListener('click', function() {
@@ -174,8 +117,14 @@
                 animation="property: rotation; to: 0 360 0; loop: true; dur: 30000; easing: linear">
             </a-entity>
 
-            <a-entity id="timeline" position="0 2 -3" scale="1 3 1" research-timeline
-                animation="property: rotation; to: 0 360 0; loop: true; dur: 30000; easing: linear">
+            <a-entity id="timeline" position="0 2 -3" scale="1 3 1" animation="property: rotation; to: 0 360 0; loop: true; dur: 30000; easing: linear">
+                <a-entity gltf-model="#stephen-harrisons-lab" position="3 2.5 0" rotation="0 90 0" scale="2 1.5 0" material="color: #00FFFF"></a-entity>
+                <a-entity gltf-model="#dana-farber-cancer-center" position="2.12 2.5 2.12" rotation="0 45 0" scale="2 1.5 0" material="color: #4169E1"></a-entity>
+                <a-entity gltf-model="#boston-childrens-hospital" position="0 2.5 3" rotation="0 0 0" scale="2 1.5 0" material="color: #9370DB"></a-entity>
+                <a-entity gltf-model="#brigham-and-womens-hospital" position="-2.12 2.5 2.12" rotation="0 -45 0" scale="2 1.5 0" material="color: #7B68EE"></a-entity>
+                <a-entity gltf-model="#ragon-institute" position="-3 2.5 0" rotation="0 -90 0" scale="2 1.5 0" material="color: #4B0082"></a-entity>
+                <a-entity gltf-model="#beth-israel-deaconess" position="-2.12 2.5 -2.12" rotation="0 -135 0" scale="2 1.5 0" material="color: #40E0D0"></a-entity>
+                <a-entity gltf-model="#mass-general" position="0 2.5 -3" rotation="0 180 0" scale="2 1.5 0" material="color: #8A7BB8"></a-entity>
             </a-entity>
         </a-entity>
 
