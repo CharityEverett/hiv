@@ -93,32 +93,32 @@ AFRAME.registerComponent('research-timeline', {
   init: function() {
     const timelineData = [
       {
-        institution: "Stephen Harrison's Lab- Laboratory of Structural Biology",
+        institution: "stephen-harrisons-lab",
         color: "#00FFFF",
-           },
+      },
       {
-        institution: "Dana Farber Cancer Center",
+        institution: "dana-farber-cancer-center",
         color: "#4169E1",
-         },
+      },
       {
-        institution: "Boston Children's Hospital",
+        institution: "boston-childrens-hospital",
         color: "#9370DB",
       },
       {
-        institution: "Brigham and Women's Hospital",
+        institution: "brigham-and-womens-hospital",
         color: "#7B68EE",
-             },
+      },
       {
-        institution: "Ragon Institute of Mass General, MIT, and Harvard",
+        institution: "ragon-institute",
         color: "#4B0082",
       },
       {
-        institution: "Beth Israel Deaconess Medical Center",
+        institution: "beth-israel-deaconess",
         color: "#40E0D0",
       },
       {
-        institution: "Mass General",
-            color: "#8A7BB8",
+        institution: "mass-general",
+        color: "#8A7BB8",
       }
     ];
 
@@ -134,26 +134,29 @@ AFRAME.registerComponent('research-timeline', {
       arc.setAttribute('radius-tubular', '0.15');
       arc.setAttribute('arc', segmentAngle);
       arc.setAttribute('color', data.color);
-      arc.setAttribute('rotation', {
-        x: 90,
-        y: 0,
-        z: index * segmentAngle
-      });
+      arc.setAttribute('rotation', `90 0 ${index * segmentAngle}`);
       
       const building = document.createElement('a-entity');
       const labelAngle = index * segmentAngle;
       const labelX = radius * Math.cos(labelAngle * Math.PI / 180);
       const labelZ = radius * Math.sin(labelAngle * Math.PI / 180);
       
-      building.setAttribute('gltf-model', '#boston-childrens');
+      building.setAttribute('gltf-model', `#${data.institution}`);
       building.setAttribute('position', `${labelX} 0.5 ${labelZ}`);
       building.setAttribute('rotation', `0 ${-labelAngle + 90} 0`);
-      building.setAttribute('scale', '0.5 0.5 0.5'); // Adjust scale as needed
+      building.setAttribute('scale', '2 1.5 0');
+      building.setAttribute('material', {
+        color: data.color,
+        metalness: 0.3,
+        roughness: 0.7,
+        emissive: data.color,
+        emissiveIntensity: 0.2
+      });
       
       segment.appendChild(arc);
       segment.appendChild(building);
       this.el.appendChild(segment);
-});
+    });
   }
 });
     AFRAME.registerComponent('institution-buildings', {
