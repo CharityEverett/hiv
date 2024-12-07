@@ -2,8 +2,7 @@
 <html>
   <head>
     <title>Harvard HIV Research WebXR Data Visualization</title>
-    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-    <script src="js/aframe-text-geometry-component.min.js"></script>
+    <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
     <style>
       body {
         margin: 0;
@@ -55,7 +54,7 @@ core.setAttribute('geometry', {
       // Create tapered cone instead of cylinder
       const stem = document.createElement('a-cone');
       stem.setAttribute('height', '0.6');
-      stem.setAttribute('radius-bottom', '0.015');
+      stem.setAttribute('radius-bottom', '0.035');
       stem.setAttribute('radius-top', '0.005');
       stem.setAttribute('color', '#4169E1');
       stem.setAttribute('opacity', '0.9');
@@ -299,9 +298,15 @@ this.el.appendChild(detail);    });
   <body>
   <a-scene bloom="radius: 0.66; intensity: 1.0; threshold: 0.7">
     <a-assets>
-  <a-asset-item id="customFont" src="fonts/helvetiker_regular.typeface.json"></a-asset-item>
-<a-asset-item id="boston-childrens" src="assets/Institutions/BostonChildrensHospital.glb"></a-asset-item>
+  <a-asset-item id="boston-childrens-hospital" src="assets/Institutions/BostonChildrensHospital.glb"></a-asset-item>
+  <a-asset-item id="beth-israel-deaconess" src="assets/Institutions/beth_israel.glb"></a-asset-item>
+  <a-asset-item id="brigham-and-womens-hospital" src="assets/Institutions/brigham_womens.glb"></a-asset-item>
+  <a-asset-item id="dana-farber-cancer-center" src="assets/Institutions/dana_farber.glb"></a-asset-item>
+  <a-asset-item id="mass-general" src="assets/Institutions/mass_general.glb"></a-asset-item>
+  <a-asset-item id="ragon-institute" src="assets/Institutions/ragon_institute.glb"></a-asset-item>
+  <a-asset-item id="stephen-harrisons-lab" src="assets/Institutions/stephen_harrisons.glb"></a-asset-item>
     </a-assets>
+    
   <a-sky color="#000033"></a-sky>
   
   <a-entity
@@ -333,6 +338,56 @@ this.el.appendChild(detail);    });
   scale="1 3 1"
   research-timeline
      animation="property: rotation; to: 0 360 0; loop: true; dur: 30000; easing: linear">
+</a-entity>
+
+        <!-- Static model placements around the timeline -->
+<a-entity gltf-model="#stephen-harrisons-lab" 
+    position="3 2.5 0" 
+    rotation="0 90 0" 
+    scale="2 1 2"
+    material="color: #00FFFF">
+</a-entity>
+
+<a-entity gltf-model="#dana-farber-cancer-center" 
+    position="2.12 2.5 2.12" 
+    rotation="0 45 0" 
+    scale="2 1 2"
+    material="color: #4169E1">
+</a-entity>
+
+<a-entity gltf-model="#boston-childrens-hospital" 
+    position="0 2.5 3" 
+    rotation="0 0 0" 
+    scale="2 1 2"
+    material="color: #9370DB">
+</a-entity>
+
+<a-entity gltf-model="#brigham-and-womens-hospital" 
+    position="-2.12 2.5 2.12" 
+    rotation="0 -45 0" 
+    scale="2 1 2"
+    material="color: #7B68EE">
+</a-entity>
+
+<a-entity gltf-model="#ragon-institute" 
+    position="-3 2.5 0" 
+    rotation="0 -90 0" 
+    scale="2 1 2"
+    material="color: #4B0082">
+</a-entity>
+
+<a-entity gltf-model="#beth-israel-deaconess" 
+    position="-2.12 2.5 -2.12" 
+    rotation="0 -135 0" 
+    scale="2 1 2"
+    material="color: #40E0D0">
+</a-entity>
+
+<a-entity gltf-model="#mass-general" 
+    position="0 2.5 -3" 
+    rotation="0 180 0" 
+    scale="2 1 2"
+    material="color: #8A7BB8">
 </a-entity>
     </a-entity>
 
