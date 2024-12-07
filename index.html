@@ -93,34 +93,44 @@ AFRAME.registerComponent('research-timeline', {
   init: function() {
     const timelineData = [
       {
-        institution: "stephen-harrisons-lab",
+        institution: "Stephen Harrison's Lab- Laboratory of Structural Biology",
         color: "#00FFFF",
-      },
+           },
       {
-        institution: "dana-farber-cancer-center",
+        institution: "Dana Farber Cancer Center",
         color: "#4169E1",
-      },
+         },
       {
-        institution: "boston-childrens-hospital",
+        institution: "Boston Children's Hospital",
         color: "#9370DB",
       },
       {
-        institution: "brigham-and-womens-hospital",
+        institution: "Brigham and Women's Hospital",
         color: "#7B68EE",
-      },
+             },
       {
-        institution: "ragon-institute",
+        institution: "Ragon Institute of Mass General, MIT, and Harvard",
         color: "#4B0082",
       },
       {
-        institution: "beth-israel-deaconess",
+        institution: "Beth Israel Deaconess Medical Center",
         color: "#40E0D0",
       },
       {
-        institution: "mass-general",
-        color: "#8A7BB8",
+        institution: "Mass General",
+            color: "#8A7BB8",
       }
     ];
+const modelMap = {
+  "Stephen Harrison's Lab- Laboratory of Structural Biology": "stephen-harrisons-lab",
+  "Dana Farber Cancer Center": "dana-farber-cancer-center",
+  "Boston Children's Hospital": "boston-childrens-hospital",
+  "Brigham and Women's Hospital": "brigham-and-womens-hospital",
+  "Ragon Institute of Mass General, MIT, and Harvard": "ragon-institute",
+  "Beth Israel Deaconess Medical Center": "beth-israel-deaconess",
+  "Mass General": "mass-general"
+};
+
 
     const radius = 3;
     const segmentCount = timelineData.length;
@@ -134,7 +144,11 @@ AFRAME.registerComponent('research-timeline', {
       arc.setAttribute('radius-tubular', '0.15');
       arc.setAttribute('arc', segmentAngle);
       arc.setAttribute('color', data.color);
-      arc.setAttribute('rotation', `90 0 ${index * segmentAngle}`);
+      arc.setAttribute('rotation', {
+        x: 90,
+        y: 0,
+        z: index * segmentAngle
+      });
       
       const building = document.createElement('a-entity');
       const labelAngle = index * segmentAngle;
@@ -144,19 +158,12 @@ AFRAME.registerComponent('research-timeline', {
       building.setAttribute('gltf-model', `#${data.institution}`);
       building.setAttribute('position', `${labelX} 0.5 ${labelZ}`);
       building.setAttribute('rotation', `0 ${-labelAngle + 90} 0`);
-      building.setAttribute('scale', '2 1.5 0');
-      building.setAttribute('material', {
-        color: data.color,
-        metalness: 0.3,
-        roughness: 0.7,
-        emissive: data.color,
-        emissiveIntensity: 0.2
-      });
+      building.setAttribute('scale', '0.5 0.5 0.5'); // Adjust scale as needed
       
       segment.appendChild(arc);
       segment.appendChild(building);
       this.el.appendChild(segment);
-    });
+});
   }
 });
     AFRAME.registerComponent('institution-buildings', {
