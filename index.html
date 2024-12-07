@@ -92,34 +92,13 @@ core.setAttribute('geometry', {
 AFRAME.registerComponent('research-timeline', {
   init: function() {
     const timelineData = [
-      {
-        institution: "Stephen Harrison's Lab- Laboratory of Structural Biology",
-        color: "#00FFFF",
-           },
-      {
-        institution: "Dana Farber Cancer Center",
-        color: "#4169E1",
-         },
-      {
-        institution: "Boston Children's Hospital",
-        color: "#9370DB",
-      },
-      {
-        institution: "Brigham and Women's Hospital",
-        color: "#7B68EE",
-             },
-      {
-        institution: "Ragon Institute of Mass General, MIT, and Harvard",
-        color: "#4B0082",
-      },
-      {
-        institution: "Beth Israel Deaconess Medical Center",
-        color: "#40E0D0",
-      },
-      {
-        institution: "Mass General",
-            color: "#8A7BB8",
-      }
+      { institution: "Stephen Harrison's Lab", color: "#00FFFF" },
+      { institution: "Dana Farber Cancer Center", color: "#4169E1" },
+      { institution: "Boston Children's Hospital", color: "#9370DB" },
+      { institution: "Brigham and Women's Hospital", color: "#7B68EE" },
+      { institution: "Ragon Institute", color: "#4B0082" },
+      { institution: "Beth Israel Deaconess", color: "#40E0D0" },
+      { institution: "Mass General", color: "#8A7BB8" }
     ];
 
     const radius = 3;
@@ -129,31 +108,35 @@ AFRAME.registerComponent('research-timeline', {
     timelineData.forEach((data, index) => {
       const segment = document.createElement('a-entity');
       
+      // Create timeline arc
       const arc = document.createElement('a-torus');
       arc.setAttribute('radius', radius);
       arc.setAttribute('radius-tubular', '0.15');
       arc.setAttribute('arc', segmentAngle);
       arc.setAttribute('color', data.color);
-      arc.setAttribute('rotation', {
-        x: 90,
-        y: 0,
-        z: index * segmentAngle
+      arc.setAttribute('rotation', { x: 90, y: 0, z: index * segmentAngle });
+
+      // Calculate position for text model
+      const labelAngle = (index * segmentAngle + segmentAngle/2) * (Math.PI / 180);
+      const labelX = radius * Math.cos(labelAngle);
+      const labelZ = radius * Math.sin(labelAngle);
+
+      // Create text model entity
+      const textModel = document.createElement('a-entity');
+      textModel.setAttribute('gltf-model', `#${data.institution.toLowerCase().replace(/\s+/g, '-')}`);
+      textModel.setAttribute('position', `${labelX} 0 ${labelZ}`);
+      textModel.setAttribute('rotation', `0 ${-labelAngle * (180/Math.PI) + 90} 0`);
+      textModel.setAttribute('scale', '3 1 1');
+      textModel.setAttribute('material', {
+        color: data.color,
+        metalness: 0.3,
+        roughness: 0.7
       });
-      
-      const building = document.createElement('a-entity');
-      const labelAngle = index * segmentAngle;
-      const labelX = radius * Math.cos(labelAngle * Math.PI / 180);
-      const labelZ = radius * Math.sin(labelAngle * Math.PI / 180);
-      
-      building.setAttribute('gltf-model', '#boston-childrens');
-      building.setAttribute('position', `${labelX} 0.5 ${labelZ}`);
-      building.setAttribute('rotation', `0 ${-labelAngle + 90} 0`);
-      building.setAttribute('scale', '0.5 0.5 0.5'); // Adjust scale as needed
-      
+
       segment.appendChild(arc);
-      segment.appendChild(building);
+      segment.appendChild(textModel);
       this.el.appendChild(segment);
-});
+    });
   }
 });
     AFRAME.registerComponent('institution-buildings', {
@@ -298,8 +281,15 @@ this.el.appendChild(detail);    });
   <body>
   <a-scene bloom="radius: 0.66; intensity: 1.0; threshold: 0.7">
     <a-assets>
-<a-asset-item id="boston-childrens" src="assets/Institutions/BostonChildrensHospital.glb"></a-asset-item>
-    </a-assets>
+<a-assets>
+  <a-asset-item id="stephen-harrisons-lab" src="assets/Institutions/stephen_harrisons.glb"></a-asset-item>
+  <a-asset-item id="dana-farber-cancer-center" src="assets/Institutions/dana_farber.glb"></a-asset-item>
+  <a-asset-item id="boston-childrens-hospital" src="assets/Institutions/BostonChildrens.glb"></a-asset-item>
+  <a-asset-item id="brigham-and-womens-hospital" src="assets/Institutions/brigham_womens.glb"></a-asset-item>
+  <a-asset-item id="ragon-institute" src="assets/Institutions/Ragon.glb"></a-asset-item>
+  <a-asset-item id="beth-israel-deaconess" src="assets/Institutions/beth_israel.glb"></a-asset-item>
+  <a-asset-item id="mass-general" src="assets/Institutions/mass_general.glb"></a-asset-item>
+</a-assets>    </a-assets>
   <a-sky color="#000033"></a-sky>
   
   <a-entity
