@@ -141,25 +141,20 @@ AFRAME.registerComponent('research-timeline', {
         z: index * segmentAngle
       });
       
-      const label = document.createElement('a-text');
+      const building = document.createElement('a-entity');
       const labelAngle = index * segmentAngle;
       const labelX = radius * Math.cos(labelAngle * Math.PI / 180);
       const labelZ = radius * Math.sin(labelAngle * Math.PI / 180);
       
-      label.setAttribute('value', `${data.institution}\n${data.people}`);
-      label.setAttribute('position', `${labelX * 1.2} 0.5 ${labelZ * 1.2}`);
-      label.setAttribute('scale', '2 2 2');
-      label.setAttribute('align', 'center');
-      label.setAttribute('baseline', 'center');
-      label.setAttribute('color', '#00FFFF');
-      label.setAttribute('width', '6');
-      label.setAttribute('look-at', '[camera]');
-      label.setAttribute('side', 'double');
-
+      building.setAttribute('gltf-model', '#boston-childrens');
+      building.setAttribute('position', `${labelX} 0.5 ${labelZ}`);
+      building.setAttribute('rotation', `0 ${-labelAngle + 90} 0`);
+      building.setAttribute('scale', '0.5 0.5 0.5'); // Adjust scale as needed
+      
       segment.appendChild(arc);
-      segment.appendChild(label);
+      segment.appendChild(building);
       this.el.appendChild(segment);
-    });
+});
   }
 });
     AFRAME.registerComponent('institution-buildings', {
@@ -305,7 +300,8 @@ this.el.appendChild(detail);    });
   <a-scene bloom="radius: 0.66; intensity: 1.0; threshold: 0.7">
     <a-assets>
   <a-asset-item id="customFont" src="fonts/helvetiker_regular.typeface.json"></a-asset-item>
-</a-assets>
+<a-asset-item id="boston-childrens" src="assets/Institutions/BostonChildrensHospital.glb"></a-asset-item>
+    </a-assets>
   <a-sky color="#000033"></a-sky>
   
   <a-entity
