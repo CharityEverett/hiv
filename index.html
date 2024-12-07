@@ -121,17 +121,26 @@ AFRAME.registerComponent('research-timeline', {
       const labelX = radius * Math.cos(labelAngle);
       const labelZ = radius * Math.sin(labelAngle);
 
-      // Create text model entity
-      const textModel = document.createElement('a-entity');
-      textModel.setAttribute('gltf-model', `#${data.institution.toLowerCase().replace(/\s+/g, '-')}`);
-      textModel.setAttribute('position', `${labelX} 0 ${labelZ}`);
-      textModel.setAttribute('rotation', `0 ${-labelAngle * (180/Math.PI) + 90} 0`);
-      textModel.setAttribute('scale', '3 1 1');
-      textModel.setAttribute('material', {
-        color: data.color,
-        metalness: 0.3,
-        roughness: 0.7
-      });
+  // Create text model entity
+const textModel = document.createElement('a-entity');
+textModel.setAttribute('gltf-model', `#${data.institution.toLowerCase().replace(/\s+/g, '-')}`);
+textModel.setAttribute('position', `${labelX} 0 ${labelZ}`);
+textModel.setAttribute('rotation', `0 ${-labelAngle * (180/Math.PI) + 90} 0`);
+textModel.setAttribute('scale', '5 2 2');  // Increased scale
+textModel.setAttribute('material', {
+    color: data.color,
+    metalness: 0.3,
+    roughness: 0.7,
+    emissive: data.color,
+    emissiveIntensity: 0.2
+});
+
+// Adjust Y position to center in timeline ring
+textModel.setAttribute('position', {
+    x: labelX,
+    y: 0.5,  // Raised to middle of ring
+    z: labelZ
+});
 
       segment.appendChild(arc);
       segment.appendChild(textModel);
