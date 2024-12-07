@@ -126,7 +126,7 @@ const textModel = document.createElement('a-entity');
 textModel.setAttribute('gltf-model', `#${data.institution.toLowerCase().replace(/\s+/g, '-')}`);
 textModel.setAttribute('position', `${labelX} 0 ${labelZ}`);
 textModel.setAttribute('rotation', `0 ${-labelAngle * (180/Math.PI) + 90} 0`);
-textModel.setAttribute('scale', '5 2 2');  // Increased scale
+textModel.setAttribute('scale', '2 1.5 0');  // Increased scale
 textModel.setAttribute('material', {
     color: data.color,
     metalness: 0.3,
