@@ -91,36 +91,15 @@ core.setAttribute('geometry', {
 
 AFRAME.registerComponent('research-timeline', {
   init: function() {
-    const timelineData = [
-      {
-        institution: "Stephen Harrison's Lab- Laboratory of Structural Biology",
-        color: "#00FFFF",
-           },
-      {
-        institution: "Dana Farber Cancer Center",
-        color: "#4169E1",
-         },
-      {
-        institution: "Boston Children's Hospital",
-        color: "#9370DB",
-      },
-      {
-        institution: "Brigham and Women's Hospital",
-        color: "#7B68EE",
-             },
-      {
-        institution: "Ragon Institute of Mass General, MIT, and Harvard",
-        color: "#4B0082",
-      },
-      {
-        institution: "Beth Israel Deaconess Medical Center",
-        color: "#40E0D0",
-      },
-      {
-        institution: "Mass General",
-            color: "#8A7BB8",
-      }
-    ];
+   const timelineData = [
+    { institution: "Stephen Harrison's Lab", color: "#00FFFF", modelId: "stephen-harrisons-lab" },
+    { institution: "Dana Farber Cancer Center", color: "#4169E1", modelId: "dana-farber-cancer-center" },
+    { institution: "Boston Children's Hospital", color: "#9370DB", modelId: "boston-childrens" },
+    { institution: "Brigham and Women's Hospital", color: "#7B68EE", modelId: "brigham-and-womens-hospital" },
+    { institution: "Ragon Institute of Mass General, MIT, and Harvard", color: "#4B0082", modelId: "ragon-institute" },
+    { institution: "Beth Israel Deaconess Medical Center", color: "#40E0D0", modelId: "beth-israel-deaconess" },
+    { institution: "Mass General", color: "#8A7BB8", modelId: "mass-general" }
+];
 
     const radius = 3;
     const segmentCount = timelineData.length;
@@ -145,7 +124,7 @@ AFRAME.registerComponent('research-timeline', {
       const labelX = radius * Math.cos(labelAngle * Math.PI / 180);
       const labelZ = radius * Math.sin(labelAngle * Math.PI / 180);
       
-      building.setAttribute('gltf-model', '#boston-childrens');
+      building.setAttribute('gltf-model', `#${data.modelId}`);
       building.setAttribute('position', `${labelX} 0 ${labelZ}`);
       building.setAttribute('rotation', `0 ${-labelAngle + 90} 0`);
       building.setAttribute('scale', '1 3 1'); // Adjust scale as needed
