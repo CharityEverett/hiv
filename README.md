@@ -1,7 +1,7 @@
 # Harvard HIV Research WebXR Data Visualization
 
 ![Harvard Institution HIV Data Visualization]
-(https://github.com/CharityEverett/hiv/blob/f85c766f1dd307cba3fb5d2c7aa436663f917870/assets/WIP.gif)
+(https://github.com/CharityEverett/hiv/blob/420d558dd4deb2bb6bfdf65073b9d044128007ba/assets/HarvardHIV.png)
 
 [View the visualization here](https://charityeverett.github.io/hiv/)
 
